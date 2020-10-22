@@ -1,6 +1,13 @@
 <script>
 export default {
-
+  data(){
+    return{
+      // globalData:{},
+    }
+  },
+  methods:{
+    
+  },
 }
 </script>
 

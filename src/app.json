@@ -1,28 +1,9 @@
 {
   "pages": [
-    "pages/echarts/main",
-    "pages/index/main",
-    "pages/me/main"
+    "pages/index/main"
   ],
   "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#EA5149",
-    "navigationBarTitleText": "demo2",
-    "navigationBarTextStyle": "black"
-  },
-  "tabBar": {
-    "selectedColor":  "#EA5149",
-    "list": [{
-      "text": "首页",
-      "pagePath": "pages/index/main",
-      "iconPath": "static/images/smile.png",
-      "selectedIconPath": "static/images/peace.png"
-    },
-    {
-      "text": "我的",
-      "pagePath": "pages/me/main",
-      "iconPath": "static/images/angry.png",
-      "selectedIconPath": "static/images/peace.png"
-    }]
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
   }
 }
