@@ -48,7 +48,6 @@ export default {
     display: flex;
     justify-content:center;
     background-color:#F2F5F8;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 .navBar img {
     position: absolute;
@@ -60,5 +59,12 @@ export default {
 }
 .navBar div p{
     font-family: PingFang SC;
+}
+.navBar hr{
+    height: 1px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.22);
 }
 </style>
