@@ -13,6 +13,7 @@ const app = new Vue(App)
 app.$mount()
 //设置全局变量
 getApp().globalData = {
+  screenHeight:'',
   navHeight :'',
   imgHeight:'',
   imgTop:'',

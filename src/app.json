@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/dude/main",
     "pages/index/main"
   ],
   "window": {

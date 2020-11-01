@@ -1,5 +1,5 @@
 <template>
-  <div class="container" :style="{height:screenHeight}">
+  <div class="container">
     <!-- 导航栏 -->
     <navBar></navBar>
     <!-- 置顶卡片部分 -->
@@ -153,7 +153,6 @@ export default {
             const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
             //获取用户手机信息
             const systemInfo = wx.getSystemInfoSync();
-            that.screenHeight = systemInfo.screenHeight + "px";
             that.scale = systemInfo.screenWidth/375;
             that.navHeight =
                 (menuButtonInfo.top - systemInfo.statusBarHeight) * 2 +
@@ -164,7 +163,6 @@ export default {
             that.cardTop = that.navHeight + that.scale*29 +"px";
             that.dudeHeight = systemInfo.screenHeight - that.navHeight - that.scale*222 + "px";
             that.dudeListMaxHeight = systemInfo.screenHeight - that.navHeight - that.scale*222- that.scale*104 + "px";
-            console.log(that.dudeListMaxHeight);
             that.globalData.imgHeight = menuButtonInfo.height + "px";
             that.globalData.imgTop = menuButtonInfo.top + "px";
             that.globalData.imgLeft = systemInfo.screenWidth - menuButtonInfo.right + "px";
@@ -173,7 +171,6 @@ export default {
     },
     created(){
       this.getNav()
-      console.log(this.dudeTwo.bgColor);
     },
     mounted() { 
     },
@@ -188,6 +185,7 @@ export default {
   position: relative;
   background-color: #f2f5f8;
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
 }
