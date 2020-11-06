@@ -153,12 +153,14 @@ export default {
             const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
             //获取用户手机信息
             const systemInfo = wx.getSystemInfoSync();
+            that.globalData.screenHeight = systemInfo.screenHeight;
             that.scale = systemInfo.screenWidth/375;
             that.navHeight =
                 (menuButtonInfo.top - systemInfo.statusBarHeight) * 2 +
                 menuButtonInfo.height +
                systemInfo.statusBarHeight;
             that.globalData.navHeight = that.navHeight + "px";
+            that.globalData.barHeight = systemInfo.screenHeight - that.navHeight + 'px'
             //缩放比例
             that.cardTop = that.navHeight + that.scale*29 +"px";
             that.dudeHeight = systemInfo.screenHeight - that.navHeight - that.scale*222 + "px";
@@ -171,6 +173,7 @@ export default {
     },
     created(){
       this.getNav()
+      // console.log(this.globalData.barHeight);
     },
     mounted() { 
     },

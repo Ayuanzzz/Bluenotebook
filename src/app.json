@@ -1,7 +1,8 @@
 {
   "pages": [
-    "pages/dude/main",
-    "pages/index/main"
+    "pages/chart/main",
+    "pages/index/main",
+    "pages/dude/main"
   ],
   "window": {
     "navigationBarTextStyle": "black",

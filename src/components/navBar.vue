@@ -37,7 +37,6 @@ export default {
     },
     onLoad(){
         this.getUserInfo();
-        console.log(this.globalData.textTop);
     }
     
 }
