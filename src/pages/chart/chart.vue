@@ -29,8 +29,8 @@
 
 <script>
 import navBar from '@/components/navBar';
-import echarts from 'echarts'
-import mpvueEcharts from 'mpvue-echarts'
+import mpvueEcharts from "mpvue-echarts";
+import echarts from "../../../static/untils/echarts.min";
 
 let chart = null;
 
@@ -42,23 +42,38 @@ function initChart(canvas, width, height) {
     canvas.setChart(chart);
 
     var option = {
-        title: {
-            // text: 'ECharts 入门示例'
-        },
-        tooltip: {},
-        legend: {
-            data: ['销量']
-        },
         series: [{
+            name: '面积模式',
             type: 'pie',
-            radius: '55%',
+            radius: ['15%','75%' ],
+            center: ['50%', '50%'],
+            roseType: 'radius',
+            label: {
+                show:true,
+                fontFamily:"sans-serif",
+                fontSize: 16
+            },
+            itemStyle: { 
+                normal: {
+                    // 设置扇形的阴影
+                    shadowBlur: 30,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)', 
+                    shadowOffsetX: 5,
+                    shadowOffsetY: 10
+
+                }
+            },
             data: [{
-                    name: 'happy',
-                    value: 52
+                    name: '52%',
+                    value: 52,
+                    color: '#F95050'
                 },
                 {
-                    name: 'sad',
-                    value: 70
+                    name: '70%',
+                    value: 70,
+                    itemStyle: {
+                        color: '#515151'
+                    }
                 }
             ]
         }]
@@ -75,12 +90,12 @@ export default {
     },
     data() {
         return {
+            echarts,
+            onInit: initChart,
             showBar: false,
             barHeight: '',
             time: '34天',
             switchChecked: true,
-            echarts,
-            onInit: initChart,
             switch1Checked: true,
         }
     },
@@ -126,17 +141,18 @@ export default {
 
 .wrap {
     position: relative;
-    width: 254px;
+    width: 100%;
     height: 549px;
     display: flex;
     justify-content: center;
+    margin-bottom: 15px;
 }
 
 .time {
     width: 100%;
     height: 32px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 .time p {
@@ -147,16 +163,17 @@ export default {
 }
 
 .chart {
-    border: 1px solid red;
     position: absolute;
-    width: 250px;
+    width: 100%;
     height: 250px;
     top: 80px;
 }
+
 .echarts-wrap {
-  width: 250px;
-  height: 250px;
+    width: 100%;
+    height: 250px;
 }
+
 .heart {
     position: absolute;
     width: 212px;
@@ -169,11 +186,13 @@ export default {
     justify-content: space-around;
     align-items: center;
 }
-.heart img{
+
+.heart img {
     width: 34px;
-    height: 34px;   
+    height: 34px;
 }
-.heart p{
+
+.heart p {
     font-family: PingFang HK;
     font-size: 24px;
     color: #F95050;
