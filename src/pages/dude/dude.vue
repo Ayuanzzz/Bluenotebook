@@ -153,15 +153,15 @@ export default {
   background: #ffffff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 30px;
+  text-align: center;
+
 }
 
 .button p {
-  position: absolute;
   font-family: PingFang HK;
   font-weight: 600;
   font-size: 22.9217px;
   line-height: 45px;
   color: #4378db;
-  left: 83px;
 }
 </style>

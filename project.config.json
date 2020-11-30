@@ -33,7 +33,8 @@
 	"projectname": "demo2",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
-	"cloudfunctionRoot": "static/cloud/",
+	"cloudfunctionRoot": "static/functions/",
+	"cloudfunctionTemplateRoot": "cloudfunctionTemplate",
 	"condition": {
 		"search": {
 			"current": -1,

@@ -1,7 +1,8 @@
 {
   "pages": [
-    "pages/chart/main",
+    "pages/loginone/main",
     "pages/index/main",
+    "pages/chart/main",
     "pages/dude/main"
   ],
   "window": {

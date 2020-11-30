@@ -142,7 +142,8 @@ export default {
             name:'rgba(34, 137, 85, 1)',
             time:'rgba(40, 161, 100, 1)',
             img:'/static/images/optionsFour.svg'
-          }
+          },
+          openId:''
         }
     },
     methods: {
@@ -172,8 +173,19 @@ export default {
         
     },
     created(){
-      this.getNav()
-      // console.log(this.globalData.barHeight);
+      this.getNav();
+      const that = this;
+      wx.cloud.callFunction({
+      name: 'login',
+      success: res => {
+        that.openId = res.result.openid;
+        console.log('云函数调用成功')
+        console.log(that.openId)
+      },
+      fail: err => {
+        console.error('[云函数] [login] 调用失败', err)
+      }
+    })
     },
     mounted() { 
     },
