@@ -18,14 +18,47 @@
         <img src="/static/images/Jonathan.png" />
       </div>
       <div class="btn">
-        <p>授权登录</p>
+        <button
+          plain = "true"
+          open-type="getUserInfo"
+          lang="zh_CN"
+          @getuserinfo="onGotUserInfo"
+        >
+          授权登录
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {};
+  },
+  methods: {
+    onGotUserInfo: function (e) {
+      const that = this;
+      wx.cloud.callFunction({
+        name: "login",
+        success: (res) => {
+          that.openId = res.result.openid;
+          that.userInfo = e.target.userInfo;
+          that.userInfo.openId = that.openId;
+          wx.setStorageSync("ui", that.userInfo);
+          wx.navigateTo({
+            url: "/pages/logintwo/main",
+          });
+          console.log("云函数调用成功");
+          console.log(that.userInfo);
+        },
+        fail: (err) => {
+          console.error("[云函数] [login] 调用失败", err);
+        },
+      });
+    },
+  },
+};
 </script>
 
 <style>
@@ -123,7 +156,7 @@ export default {};
   left: 102px;
   top: 384px;
   border-radius: 50%;
-  background-color:rgba(40, 161, 100, 0.3);
+  background-color: rgba(40, 161, 100, 0.3);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -132,23 +165,23 @@ export default {};
   width: 51px;
   height: 51px;
 }
-.btn {
+.btn button {
   position: absolute;
   width: 212px;
   height: 45px;
   bottom: 0px;
   left: 20px;
-  background: #ffffff;
+  background-color: #ffffff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 30px;
-}
-
-.btn p {
   font-family: PingFang HK;
   font-weight: bold;
   font-size: 23px;
   line-height: 45px;
   color: #4378db;
   text-align: center;
+}
+.btn button[plain]{
+  border:none
 }
 </style>

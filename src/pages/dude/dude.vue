@@ -6,20 +6,25 @@
       <!-- 选择器 -->
       <div class="picker">
         <div class="left">
-          <img :src="leftImg" alt="left" @click="leftCard"/>
+          <img :src="leftImg" alt="left" @click="leftCard" v-show="leftBtn" />
         </div>
         <div class="right">
-          <img :src="rightImg" alt="right" @click="rightCard"/>
+          <img
+            :src="rightImg"
+            alt="right"
+            @click="rightCard"
+            v-show="rightBtn"
+          />
         </div>
         <div class="card">
-          <img :src="dudeImg" />
+          <img :src="dudeImg" @click="test2" />
         </div>
         <div class="name">
-          <p>{{name}}</p>
+          <p>{{ name }}</p>
         </div>
       </div>
       <!-- 按钮 -->
-      <div class="button">
+      <div class="btn" @click="checkDude">
         <p>创建</p>
       </div>
     </div>
@@ -27,49 +32,134 @@
 </template>
 
 <script>
-import navBar from '@/components/navBar';
+import navBar from "@/components/navBar";
 export default {
-    components: {
-        navBar
+  components: {
+    navBar,
+  },
+  data() {
+    return {
+      openId: "",
+      container: "",
+      dudeImg: "/static/images/Peter.png",
+      leftImg: "/static/images/left.svg",
+      rightImg: "/static/images/right.svg",
+      count: 0,
+      name: "Peter",
+      leftBtn: true,
+      rightBtn: true,
+      dudeList: [],
+      time1: "",
+      time2: "",
+    };
+  },
+  methods: {
+    //选择卡片
+    leftCard() {
+      this.count--;
     },
-    data() {
-        return {
-            container: '',
-            dudeImg:'/static/images/Peter.png',
-            leftImg:'/static/images/lefthidden.svg',
-            rightImg:'/static/images/right.svg',
-            count:0,
-            showRight:true,
-            showLeft:true,
-            name:'Peter'
-        }
+    rightCard() {
+      this.count++;
     },
-    methods:{
-        //选择卡片
-        leftCard(){
-            this.count--;
-        },
-        rightCard(){
-            this.count++;
-        }
+    //创建小伙伴
+    adddude() {
+      const that = this;
+      let time = new Date();
+      that.startTime = time.getTime();
+      wx.cloud
+        .callFunction({
+          name: "adddude",
+          data: {
+            openId: that.openId,
+            name: that.name,
+            status: "doing",
+            startTime: that.startTime,
+            allSeconds: 0,
+            love: 0,
+            hate: 0,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          console.log("写入数据库成功");
+        })
+        .catch((err) => {
+          console.log("写入数据库失败", err);
+        });
     },
-    computed:{
-        cardChange(){
-            const dude = ['Peter','Vanessa','Jonathan','Jessica']
-            this.name = dude[this.count]
-            this.dudeImg = '/static/images/' + dude[this.count]+'.png'
-            if(this.count<=0){
-                this.leftImg = '/static/images/lefthidden.svg';
-            }else if(this.count>=3){
-                this.rightImg = '/static/images/righthidden.svg';
-            }else{
-                this.leftImg = '/static/images/left.svg';
-                this.rightImg = '/static/images/right.svg';
-            }
-        }
-            
-    }
-}
+    //获取小伙伴列表
+    getdude() {
+      const that = this;
+      wx.cloud
+        .callFunction({
+          name: "finddude",
+          data: {
+            openId: that.openId,
+          },
+        })
+        .then((res) => {
+          let dudeinfo = res.result.data;
+          for (let i = 0; i < dudeinfo.length; i++) {
+            that.dudeList.push(dudeinfo[i].name);
+          }
+          console.log("拉取小伙伴列表成功");
+        })
+        .catch((err) => {
+          console.log("读取数据库失败", err);
+        });
+    },
+    //判断小伙伴是否存在
+    checkDude() {
+      if (this.dudeList.includes(this.name)) {
+        wx.showToast({
+          title: "已经有这位小伙伴啦，请重新选择",
+          duration: 1500,
+          icon: "none",
+        });
+      } else {
+        this.adddude();
+        let name = this.name;
+        wx.navigateTo({
+          url: "/pages/chart/main?name=" + name,
+        });
+      }
+    },
+    test() {
+      var time = new Date();
+      this.time1 = time.getTime();
+    },
+    test2() {
+      var time = new Date();
+      this.time2 = time.getTime();
+      var seconds = this.time2 - this.time1;
+      var days = Math.ceil(seconds / 86400000);
+      console.log(days);
+      console.log(seconds);
+    },
+  },
+  computed: {
+    cardChange() {
+      const dude = ["Peter", "Vanessa", "Jonathan", "Jessica"];
+      this.name = dude[this.count];
+      this.dudeImg = "/static/images/" + dude[this.count] + ".png";
+      if (this.count <= 0) {
+        this.leftBtn = false;
+      } else if (this.count >= 3) {
+        this.rightBtn = false;
+      } else {
+        this.leftBtn = true;
+        this.rightBtn = true;
+      }
+    },
+  },
+  created() {
+    this.openId = wx.getStorageSync("ui").openId;
+    console.log(this.openId);
+  },
+  mounted() {
+    this.getdude();
+  },
+};
 </script>
 
 <style>
@@ -139,13 +229,13 @@ export default {
   justify-content: center;
   bottom: 0;
 }
-.picker .name p{
+.picker .name p {
   font-size: 23px;
   font-family: PingFang SC;
   color: rgba(145, 147, 149, 1);
 }
 
-.button {
+.btn {
   position: absolute;
   width: 212px;
   height: 45px;
@@ -153,15 +243,14 @@ export default {
   background: #ffffff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 30px;
-  text-align: center;
-
 }
 
-.button p {
+.btn p {
   font-family: PingFang HK;
-  font-weight: 600;
-  font-size: 22.9217px;
+  font-weight: bold;
+  font-size: 23px;
   line-height: 45px;
   color: #4378db;
+  text-align: center;
 }
 </style>

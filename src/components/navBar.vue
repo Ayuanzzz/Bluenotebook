@@ -50,6 +50,7 @@ export default {
 }
 .navBar img {
     position: absolute;
+    border-radius: 50%;
 }
 .navBar div{
     position: absolute;

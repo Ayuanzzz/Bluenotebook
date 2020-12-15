@@ -3,7 +3,7 @@
     <!-- 导航栏 -->
     <navBar></navBar>
     <!-- 置顶卡片部分 -->
-    <div class="card" :style="{top:cardTop}">
+    <div class="card" :style="{ top: cardTop }">
       <div class="imgRight">
         <img src="/static/images/cardRight.svg" alt="cardRight" />
       </div>
@@ -18,23 +18,23 @@
       </div>
     </div>
     <!-- 小伙伴列表 -->
-    <div class="dude" :style="{height:dudeHeight}">
+    <div class="dude" :style="{ height: dudeHeight }">
       <div class="dudeTitle">
         <p>小伙伴</p>
         <img src="/static/images/add.svg" alt="add" />
       </div>
-      <div class="dudeList" :style="{height:dudeListMaxHeight}">
-        <div class="dudeCard" :style="{backgroundColor:dudeOne.bgColor}">
+      <div class="dudeList" :style="{ height: dudeListMaxHeight }">
+        <div class="dudeCard" :style="{ backgroundColor: dudeOne.bgColor }">
           <div class="profile">
             <img src="/static/images/Peter.png" />
           </div>
           <div class="optionsButton">
             <img :src="dudeOne.img" />
           </div>
-          <div class="name" :style="{color:dudeOne.name}">
+          <div class="name" :style="{ color: dudeOne.name }">
             <p>Peter</p>
           </div>
-          <div class="time" :style="{color:dudeOne.time}">
+          <div class="time" :style="{ color: dudeOne.time }">
             <p>起始日:2020.08.11</p>
           </div>
           <div class="control">
@@ -43,17 +43,17 @@
             <p>删除</p>
           </div>
         </div>
-        <div class="dudeCard" :style="{backgroundColor:dudeTwo.bgColor}">
+        <div class="dudeCard" :style="{ backgroundColor: dudeTwo.bgColor }">
           <div class="profile">
             <img src="/static/images/Vanessa.png" />
           </div>
           <div class="optionsButton">
             <img :src="dudeTwo.img" />
           </div>
-          <div class="name" :style="{color:dudeTwo.name}">
+          <div class="name" :style="{ color: dudeTwo.name }">
             <p>Vanessa</p>
           </div>
-          <div class="time" :style="{color:dudeTwo.time}">
+          <div class="time" :style="{ color: dudeTwo.time }">
             <p>起始日:2020.08.11</p>
           </div>
           <div class="control">
@@ -62,17 +62,17 @@
             <p>删除</p>
           </div>
         </div>
-        <div class="dudeCard" :style="{backgroundColor:dudeThree.bgColor}">
+        <div class="dudeCard" :style="{ backgroundColor: dudeThree.bgColor }">
           <div class="profile">
             <img src="/static/images/Jessica.png" />
           </div>
           <div class="optionsButton">
             <img :src="dudeThree.img" />
           </div>
-          <div class="name" :style="{color:dudeThree.name}">
+          <div class="name" :style="{ color: dudeThree.name }">
             <p>Jessica</p>
           </div>
-          <div class="time" :style="{color:dudeThree.time}">
+          <div class="time" :style="{ color: dudeThree.time }">
             <p>起始日:2020.08.11</p>
           </div>
           <div class="control">
@@ -81,17 +81,17 @@
             <p>删除</p>
           </div>
         </div>
-        <div class="dudeCard" :style="{backgroundColor:dudeFour.bgColor}">
+        <div class="dudeCard" :style="{ backgroundColor: dudeFour.bgColor }">
           <div class="profile">
             <img src="/static/images/Jonathan.png" />
           </div>
           <div class="optionsButton">
             <img :src="dudeFour.img" />
           </div>
-          <div class="name" :style="{color:dudeFour.name}">
+          <div class="name" :style="{ color: dudeFour.name }">
             <p>Jonathan</p>
           </div>
-          <div class="time" :style="{color:dudeFour.time}">
+          <div class="time" :style="{ color: dudeFour.time }">
             <p>起始日:2020.08.11</p>
           </div>
           <div class="control">
@@ -106,93 +106,98 @@
 </template>
 
 <script>
-import navBar from '@/components/navBar';
+import navBar from "@/components/navBar";
 export default {
-    components:{
-      navBar
-    },
-    data() {
-        return {
-          screenHeight:'',
-          dudeHeight:'',
-          navHeight:'',
-          cardTop:'',
-          dudeListMaxHeight:'',
-          scale:'',
-          dudeOne:{
-            bgColor:'rgba(67, 120, 219, 0.16);',
-            name:'rgba(64, 93, 181, 1)',
-            time:'rgba(67, 120, 219, 1)',
-            img:'/static/images/optionsOne.svg'
-          },
-          dudeTwo:{
-            bgColor:'rgba(240, 167, 20, 0.16)',
-            name:'rgba(240, 167, 20, 1)',
-            time:'rgba(240, 167, 20, 1)',
-            img:'/static/images/optionsTwo.svg'
-          },
-          dudeThree:{
-            bgColor:'rgba(243, 85, 85, 0.16)',
-            name:'rgba(171, 63, 63, 1)',
-            time:'rgba(243, 85, 85, 1)',
-            img:'/static/images/optionsThree.svg'
-          },
-          dudeFour:{
-            bgColor:'rgba(40, 161, 100, 0.16)',
-            name:'rgba(34, 137, 85, 1)',
-            time:'rgba(40, 161, 100, 1)',
-            img:'/static/images/optionsFour.svg'
-          },
-          openId:''
-        }
-    },
-    methods: {
-        //获取导航栏参数
-        getNav() {
-            let that = this;
-            //获取按钮信息
-            const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
-            //获取用户手机信息
-            const systemInfo = wx.getSystemInfoSync();
-            that.globalData.screenHeight = systemInfo.screenHeight;
-            that.scale = systemInfo.screenWidth/375;
-            that.navHeight =
-                (menuButtonInfo.top - systemInfo.statusBarHeight) * 2 +
-                menuButtonInfo.height +
-               systemInfo.statusBarHeight;
-            that.globalData.navHeight = that.navHeight + "px";
-            that.globalData.barHeight = systemInfo.screenHeight - that.navHeight + 'px'
-            //缩放比例
-            that.cardTop = that.navHeight + that.scale*29 +"px";
-            that.dudeHeight = systemInfo.screenHeight - that.navHeight - that.scale*222 + "px";
-            that.dudeListMaxHeight = systemInfo.screenHeight - that.navHeight - that.scale*222- that.scale*104 + "px";
-            that.globalData.imgHeight = menuButtonInfo.height + "px";
-            that.globalData.imgTop = menuButtonInfo.top + "px";
-            that.globalData.imgLeft = systemInfo.screenWidth - menuButtonInfo.right + "px";
-        },
-        
-    },
-    created(){
-      this.getNav();
-      const that = this;
-      wx.cloud.callFunction({
-      name: 'login',
-      success: res => {
-        that.openId = res.result.openid;
-        console.log('云函数调用成功')
-        console.log(that.openId)
+  components: {
+    navBar,
+  },
+  data() {
+    return {
+      screenHeight: "",
+      dudeHeight: "",
+      navHeight: "",
+      cardTop: "",
+      dudeListMaxHeight: "",
+      scale: "",
+      dudeOne: {
+        bgColor: "rgba(67, 120, 219, 0.16);",
+        name: "rgba(64, 93, 181, 1)",
+        time: "rgba(67, 120, 219, 1)",
+        img: "/static/images/optionsOne.svg",
       },
-      fail: err => {
-        console.error('[云函数] [login] 调用失败', err)
-      }
-    })
+      dudeTwo: {
+        bgColor: "rgba(240, 167, 20, 0.16)",
+        name: "rgba(240, 167, 20, 1)",
+        time: "rgba(240, 167, 20, 1)",
+        img: "/static/images/optionsTwo.svg",
+      },
+      dudeThree: {
+        bgColor: "rgba(243, 85, 85, 0.16)",
+        name: "rgba(171, 63, 63, 1)",
+        time: "rgba(243, 85, 85, 1)",
+        img: "/static/images/optionsThree.svg",
+      },
+      dudeFour: {
+        bgColor: "rgba(40, 161, 100, 0.16)",
+        name: "rgba(34, 137, 85, 1)",
+        time: "rgba(40, 161, 100, 1)",
+        img: "/static/images/optionsFour.svg",
+      },
+      openId: "",
+    };
+  },
+  methods: {
+    //获取导航栏参数
+    getNav() {
+      let that = this;
+      //获取按钮信息
+      const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
+      //获取用户手机信息
+      const systemInfo = wx.getSystemInfoSync();
+      that.globalData.screenHeight = systemInfo.screenHeight;
+      that.scale = systemInfo.screenWidth / 375;
+      that.navHeight =
+        (menuButtonInfo.top - systemInfo.statusBarHeight) * 2 +
+        menuButtonInfo.height +
+        systemInfo.statusBarHeight;
+      that.globalData.navHeight = that.navHeight + "px";
+      that.globalData.barHeight =
+        systemInfo.screenHeight - that.navHeight + "px";
+      //缩放比例
+      that.cardTop = that.navHeight + that.scale * 29 + "px";
+      that.dudeHeight =
+        systemInfo.screenHeight - that.navHeight - that.scale * 222 + "px";
+      that.dudeListMaxHeight =
+        systemInfo.screenHeight -
+        that.navHeight -
+        that.scale * 222 -
+        that.scale * 104 +
+        "px";
+      that.globalData.imgHeight = menuButtonInfo.height + "px";
+      that.globalData.imgTop = menuButtonInfo.top + "px";
+      that.globalData.imgLeft =
+        systemInfo.screenWidth - menuButtonInfo.right + "px";
     },
-    mounted() { 
-    },
-    computed(){
-      
-    }
-}
+  },
+  created() {
+    // const ui = wx.getStorageSync("ui");
+    // if (ui.openId) {
+    //   console.log(ui);
+    //   wx.navigateTo({
+    //     url: "/pages/index/main",
+    //   });
+    //   console.log("a");
+    // } else {
+    //   wx.navigateTo({
+    //     url: "/pages/loginone/main",
+    //   });
+    //   console.log("b");
+    // }
+    this.getNav();
+  },
+  mounted() {},
+  computed() {},
+};
 </script>
 
 <style>

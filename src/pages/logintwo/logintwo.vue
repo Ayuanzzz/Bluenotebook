@@ -5,17 +5,37 @@
         <p>hello</p>
       </div>
       <div class="profile">
-        <img src="/static/images/wawa.png" />
+        <img :src="avatar" />
       </div>
       <div class="btn">
-        <p>添加小伙伴</p>
+        <p @click="navTo">添加小伙伴</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data(){
+    return{
+      avatar:''
+    }
+  },
+  methods:{
+    getUi(){
+      this.avatar = wx.getStorageSync('ui').avatarUrl
+      console.log(this.avatar);
+    },
+    navTo(){
+      wx.navigateTo({
+            url: "/pages/dude/main",
+          });
+    }
+  },
+  created(){
+    this.getUi()
+  }
+};
 </script>
 
 <style>
@@ -54,7 +74,7 @@ export default {};
 .profile img {
   width: 141px;
   height: 141px;
-  border: 50%;
+  border-radius: 50%;
 }
 .btn {
   position: absolute;

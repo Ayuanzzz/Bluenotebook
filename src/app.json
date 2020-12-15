@@ -1,10 +1,10 @@
 {
   "pages": [
-    "pages/logintwo/main",
+    "pages/chart/main",
+    "pages/dude/main",
     "pages/loginone/main",
     "pages/index/main",
-    "pages/chart/main",
-    "pages/dude/main"
+    "pages/logintwo/main"
   ],
   "window": {
     "navigationBarTextStyle": "black",

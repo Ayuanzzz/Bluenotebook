@@ -1,200 +1,413 @@
 <template>
-<div class="container">
+  <div class="container">
     <!-- 导航栏 -->
     <navBar></navBar>
-    <div class="bar" :style="{height:barHeight}" v-if="showBar">
-        <div class="wrap">
-            <!-- 时间开光 -->
-            <div class="time">
-                <p>{{time}}</p>
-                <switch :checked="switchChecked" @click="switchChange" />
-            </div>
-            <!-- 饼状图 -->
-            <div class="chart">
-                <mpvue-echarts :echarts="echarts" :onInit="onInit" canvasId="demo-canvas" />
-            </div>
-            <!-- 心情按钮 -->
-            <div class="heart">
-                <img src="/static/images/love.svg">
-                <p>12</p>
-            </div>
-            <div class="heart" style="bottom:0px">
-                <img src="/static/images/hate.svg">
-                <p style="color:#515151;">12</p>
-            </div>
+    <div class="bar" :style="{ height: barHeight }" v-if="showBar">
+      <div class="wrap">
+        <!-- 时间开光 -->
+        <div class="time">
+          <p>{{ days }}</p>
+          <switch :checked="switchChecked" @click="switchChange" />
         </div>
+        <!-- 饼状图 -->
+        <div class="chart">
+          <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
+        </div>
+        <!-- 心情按钮 -->
+        <div class="heart" @click="happy">
+          <img src="/static/images/love.svg" />
+          <p>{{ love }}</p>
+        </div>
+        <div class="heart" style="bottom: 0px" @click="sad">
+          <img src="/static/images/hate.svg" />
+          <p style="color: #515151">{{ hate }}</p>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
-import navBar from '@/components/navBar';
+import navBar from "@/components/navBar";
 import mpvueEcharts from "mpvue-echarts";
 import echarts from "../../../static/untils/echarts.min";
 
 let chart = null;
 
-function initChart(canvas, width, height) {
-    chart = echarts.init(canvas, null, {
-        width: width,
-        height: height
-    });
-    canvas.setChart(chart);
+// function initChart(canvas, width, height) {
+//   chart = echarts.init(canvas, null, {
+//     width: width,
+//     height: height,
+//   });
+//   canvas.setChart(chart);
 
-    var option = {
-        series: [{
-            name: '面积模式',
-            type: 'pie',
-            radius: ['15%','75%' ],
-            center: ['50%', '50%'],
-            roseType: 'radius',
-            label: {
-                show:true,
-                fontFamily:"sans-serif",
-                fontSize: 16
-            },
-            itemStyle: { 
-                normal: {
-                    // 设置扇形的阴影
-                    shadowBlur: 30,
-                    shadowColor: 'rgba(0, 0, 0, 0.3)', 
-                    shadowOffsetX: 5,
-                    shadowOffsetY: 10
+//   var option = {
+//     series: [
+//       {
+//         name: "面积模式",
+//         type: "pie",
+//         radius: ["15%", "75%"],
+//         center: ["50%", "50%"],
+//         roseType: "radius",
+//         label: {
+//           show: true,
+//           fontFamily: "sans-serif",
+//           fontSize: 16,
+//         },
+//         itemStyle: {
+//           normal: {
+//             // 设置扇形的阴影
+//             shadowBlur: 30,
+//             shadowColor: "rgba(0, 0, 0, 0.3)",
+//             shadowOffsetX: 5,
+//             shadowOffsetY: 10,
+//           },
+//         },
+//         data: [
+//           {
+//             name: "52%",
+//             value: this.love,
+//             color: "#F95050",
+//           },
+//           {
+//             name: "70%",
+//             value: this.hate,
+//             itemStyle: {
+//               color: "#515151",
+//             },
+//           },
+//         ],
+//       },
+//     ],
+//   };
 
-                }
-            },
-            data: [{
-                    name: '52%',
-                    value: 52,
-                    color: '#F95050'
-                },
-                {
-                    name: '70%',
-                    value: 70,
-                    itemStyle: {
-                        color: '#515151'
-                    }
-                }
-            ]
-        }]
-    };
+//   chart.setOption(option);
 
-    chart.setOption(option);
-
-    return chart; // 返回 chart 后可以自动绑定触摸操作
-}
+//   return chart;
+// }
 export default {
-    components: {
-        navBar,
-        mpvueEcharts
+  components: {
+    navBar,
+    mpvueEcharts,
+  },
+  data() {
+    return {
+      echarts,
+      // onInit: initChart,
+      showBar: false,
+      barHeight: "",
+      switchChecked: true,
+      name: "",
+      openId: "",
+      dudeObj: {},
+      days: "",
+      allSeconds: 0,
+      love: 0,
+      hate: 0,
+      happyPer: null,
+      sadPer: null,
+      option: null,
+    };
+  },
+  methods: {
+    initChart() {
+      this.option = {
+        series: [
+          {
+            type: "pie",
+            radius: ["15%", "75%"],
+            center: ["50%", "50%"],
+            roseType: "radius",
+            label: {
+              show: true,
+              fontFamily: "sans-serif",
+              fontSize: 16,
+            },
+            itemStyle: {
+              normal: {
+                // 设置扇形的阴影
+                shadowBlur: 30,
+                shadowColor: "rgba(0, 0, 0, 0.3)",
+                shadowOffsetX: 5,
+                shadowOffsetY: 10,
+              },
+            },
+            data: [
+              {
+                name: Math.ceil((this.love / (this.love + this.hate)) * 100) + "%",
+                value: this.love,
+                color: "#F95050",
+              },
+              {
+                name: 100-(Math.ceil((this.love / (this.love + this.hate)) * 100)) + "%",
+                value: this.hate,
+                color: "#515151",
+              },
+            ],
+          },
+        ],
+      };
+      this.$refs.echarts.init()
     },
-    data() {
-        return {
-            echarts,
-            onInit: initChart,
-            showBar: false,
-            barHeight: '',
-            time: '34天',
-            switchChecked: true,
-            switch1Checked: true,
-        }
+    handleInit(canvas, width, height) {
+      (chart = echarts.init(canvas, null, {
+        width: width,
+        height: height,
+      })),
+        canvas.setChart(chart);
+      chart.setOption(this.option);
+      return chart;
     },
-    methods: {
-        switchChange() {
-            this.switchChecked = !this.switchChecked;
-            if (this.switchChecked) {
-                this.time = '34天'
-            } else {
-                this.time = '已结束'
-            }
-        },
-        barShow() {
-            if (this.barHeight) {
-                this.showBar = true;
-            }
-        }
+    switchChange() {
+      this.switchChecked = !this.switchChecked;
+      if (this.switchChecked) {
+        this.reloveDays();
+        this.days = Math.ceil(this.allSeconds / 86400000) + " 天";
+      } else {
+        this.brokenDays();
+        this.days = "已结束";
+      }
     },
-    mounted() {
-        this.barHeight = this.globalData.barHeight;
-        this.barShow();
+    barShow() {
+      if (this.barHeight) {
+        this.showBar = true;
+      }
     },
-
-}
+    //获取小伙伴详细信息
+    dudeInfo() {
+      const that = this;
+      wx.cloud
+        .callFunction({
+          name: "getonedude",
+          data: {
+            openId: that.openId,
+            name: "Jessica",
+          },
+        })
+        .then((res) => {
+          that.dudeObj = res.result.data[0];
+          that.love = that.dudeObj.love;
+          that.hate = that.dudeObj.hate;
+          // that.calcPer();
+          that.initChart();
+          that.judgeStatus();
+          console.log("获取小伙伴信息成功");
+        })
+        .catch((err) => {
+          console.log("读取数据库失败", err);
+        });
+    },
+    //计算相处时间
+    calcDays() {
+      let time = new Date();
+      let now = time.getTime();
+      let old = this.dudeObj.startTime;
+      let onceDays = this.dudeObj.allSeconds;
+      this.allSeconds = now - old + onceDays;
+      this.days = Math.ceil(this.allSeconds / 86400000) + " 天";
+    },
+    //计算百分比
+    calcPer() {
+      this.happyPer = Math.ceil((this.love / (this.love + this.hate)) * 100);
+      this.sadPer = 100 - this.happyPer;
+      console.log(this.sadPer);
+      if (this.sadPer) {
+        this.chart();
+      } else {
+        console.log("百分比计算失败");
+      }
+    },
+    //判断状态
+    judgeStatus() {
+      if (this.dudeObj.status === "doing") {
+        this.switchChecked = true;
+        this.calcDays();
+      } else if (this.dudeObj.status === "done") {
+        this.switchChecked = false;
+        this.days = "已结束";
+      }
+    },
+    //停止计时
+    brokenDays() {
+      const that = this;
+      wx.cloud
+        .callFunction({
+          name: "stoptime",
+          data: {
+            openId: that.openId,
+            name: "Jessica",
+            allSeconds: that.allSeconds,
+          },
+        })
+        .then((res) => {
+          console.log("时间停止");
+        })
+        .catch((err) => {
+          console.log("停止失败", err);
+        });
+    },
+    //开始计时
+    reloveDays() {
+      let time = new Date();
+      let thisTime = time.getTime();
+      const that = this;
+      wx.cloud
+        .callFunction({
+          name: "starttime",
+          data: {
+            openId: that.openId,
+            name: "Jessica",
+            startTime: thisTime,
+          },
+        })
+        .then((res) => {
+          console.log("计时开始");
+        })
+        .catch((err) => {
+          console.log("计时失败", err);
+        });
+    },
+    //可爱小姐姐
+    happy() {
+      const that = this;
+      that.love++;
+      console.log(that.love);
+      wx.cloud
+        .callFunction({
+          name: "addscore",
+          data: {
+            openId: that.openId,
+            name: "Jessica",
+            love: that.love,
+          },
+        })
+        .then((res) => {
+          console.log("加分成功");
+        })
+        .catch((err) => {
+          console.log("加分失败", err);
+        });
+    },
+    //邪恶小姐姐
+    sad() {
+      const that = this;
+      that.hate++;
+      wx.cloud
+        .callFunction({
+          name: "cutscore",
+          data: {
+            openId: that.openId,
+            name: "Jessica",
+            hate: that.hate,
+          },
+        })
+        .then((res) => {
+          console.log("减分成功");
+        })
+        .catch((err) => {
+          console.log("减分失败", err);
+        });
+    },
+  },
+  //   onLoad(options) {
+  //     const that = this;
+  //     that.name = options.name;
+  //     console.log(that.name);
+  //   },
+  // computed: {
+  //   test() {
+  //     if (this.happyPer > 0 || this.sadPer > 0) {
+  //       this.happyPer = Math.ceil((this.love / (this.love + this.hate)) * 100);
+  //       this.sadPer = 100 - this.happyPer;
+  //       console.log(this.happyPer);
+  //       console.log(this.sadPer);
+  //     }
+  //   },
+  // },
+  created() {
+    this.openId = wx.getStorageSync("ui").openId;
+    this.dudeInfo();
+  },
+  mounted() {
+    this.barHeight = this.globalData.barHeight;
+    this.barShow();
+  },
+};
 </script>
 
 <style>
 .container {
-    position: relative;
-    background-color: #f2f5f8;
-    width: 100%;
-    height: 100%;
+  position: relative;
+  background-color: #f2f5f8;
+  width: 100%;
+  height: 100%;
 }
 
 .bar {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .wrap {
-    position: relative;
-    width: 100%;
-    height: 549px;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 15px;
+  position: relative;
+  width: 100%;
+  height: 549px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
 }
 
 .time {
-    width: 100%;
-    height: 32px;
-    display: flex;
-    justify-content: space-around;
+  width: 100%;
+  height: 32px;
+  display: flex;
+  justify-content: space-around;
 }
 
 .time p {
-    font-family: PingFang HK;
-    font-size: 22.92px;
-    line-height: 32px;
-    color: rgba(0, 0, 0, 0.4);
+  font-family: PingFang HK;
+  font-size: 22.92px;
+  line-height: 32px;
+  color: rgba(0, 0, 0, 0.4);
 }
 
 .chart {
-    position: absolute;
-    width: 100%;
-    height: 250px;
-    top: 80px;
+  position: absolute;
+  width: 100%;
+  height: 250px;
+  top: 80px;
 }
 
 .echarts-wrap {
-    width: 100%;
-    height: 250px;
+  width: 100%;
+  height: 250px;
 }
 
 .heart {
-    position: absolute;
-    width: 212px;
-    height: 45px;
-    bottom: 97px;
-    background: #FFFFFF;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 30px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+  position: absolute;
+  width: 212px;
+  height: 45px;
+  bottom: 97px;
+  background: #ffffff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 30px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .heart img {
-    width: 34px;
-    height: 34px;
+  width: 34px;
+  height: 34px;
 }
 
 .heart p {
-    font-family: PingFang HK;
-    font-size: 24px;
-    color: #F95050;
+  font-family: PingFang HK;
+  font-size: 24px;
+  color: #f95050;
 }
 </style>
