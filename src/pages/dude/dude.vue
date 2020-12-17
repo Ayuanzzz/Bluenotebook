@@ -124,18 +124,6 @@ export default {
         });
       }
     },
-    test() {
-      var time = new Date();
-      this.time1 = time.getTime();
-    },
-    test2() {
-      var time = new Date();
-      this.time2 = time.getTime();
-      var seconds = this.time2 - this.time1;
-      var days = Math.ceil(seconds / 86400000);
-      console.log(days);
-      console.log(seconds);
-    },
   },
   computed: {
     cardChange() {
@@ -253,4 +241,6 @@ export default {
   color: #4378db;
   text-align: center;
 }
+
+
 </style>

@@ -23,75 +23,18 @@
         <p>小伙伴</p>
         <img src="/static/images/add.svg" alt="add" />
       </div>
-      <div class="dudeList" :style="{ height: dudeListMaxHeight }">
-        <div class="dudeCard" :style="{ backgroundColor: dudeOne.bgColor }">
+      <div class="dudeList" :style="{ height: dudeListMaxHeight }" >
+        <div class="dudeCard" :style="{ backgroundColor: item.bgColor }" v-show="item.id+1" v-for="(item,index) in dudeItem" :key="index" >
           <div class="profile">
-            <img src="/static/images/Peter.png" />
+            <img :src="item.profile">
           </div>
           <div class="optionsButton">
-            <img :src="dudeOne.img" />
+            <img :src="item.img" >
           </div>
-          <div class="name" :style="{ color: dudeOne.name }">
-            <p>Peter</p>
+          <div class="dudename" :style="{ color: item.nameColor }">
+            <p>{{ item.name }}</p>
           </div>
-          <div class="time" :style="{ color: dudeOne.time }">
-            <p>起始日:2020.08.11</p>
-          </div>
-          <div class="control">
-            <p>置顶</p>
-            <hr />
-            <p>删除</p>
-          </div>
-        </div>
-        <div class="dudeCard" :style="{ backgroundColor: dudeTwo.bgColor }">
-          <div class="profile">
-            <img src="/static/images/Vanessa.png" />
-          </div>
-          <div class="optionsButton">
-            <img :src="dudeTwo.img" />
-          </div>
-          <div class="name" :style="{ color: dudeTwo.name }">
-            <p>Vanessa</p>
-          </div>
-          <div class="time" :style="{ color: dudeTwo.time }">
-            <p>起始日:2020.08.11</p>
-          </div>
-          <div class="control">
-            <p>置顶</p>
-            <hr />
-            <p>删除</p>
-          </div>
-        </div>
-        <div class="dudeCard" :style="{ backgroundColor: dudeThree.bgColor }">
-          <div class="profile">
-            <img src="/static/images/Jessica.png" />
-          </div>
-          <div class="optionsButton">
-            <img :src="dudeThree.img" />
-          </div>
-          <div class="name" :style="{ color: dudeThree.name }">
-            <p>Jessica</p>
-          </div>
-          <div class="time" :style="{ color: dudeThree.time }">
-            <p>起始日:2020.08.11</p>
-          </div>
-          <div class="control">
-            <p>置顶</p>
-            <hr />
-            <p>删除</p>
-          </div>
-        </div>
-        <div class="dudeCard" :style="{ backgroundColor: dudeFour.bgColor }">
-          <div class="profile">
-            <img src="/static/images/Jonathan.png" />
-          </div>
-          <div class="optionsButton">
-            <img :src="dudeFour.img" />
-          </div>
-          <div class="name" :style="{ color: dudeFour.name }">
-            <p>Jonathan</p>
-          </div>
-          <div class="time" :style="{ color: dudeFour.time }">
+          <div class="time" :style="{ color: item.time }">
             <p>起始日:2020.08.11</p>
           </div>
           <div class="control">
@@ -119,31 +62,49 @@ export default {
       cardTop: "",
       dudeListMaxHeight: "",
       scale: "",
-      dudeOne: {
-        bgColor: "rgba(67, 120, 219, 0.16);",
-        name: "rgba(64, 93, 181, 1)",
-        time: "rgba(67, 120, 219, 1)",
-        img: "/static/images/optionsOne.svg",
-      },
-      dudeTwo: {
-        bgColor: "rgba(240, 167, 20, 0.16)",
-        name: "rgba(240, 167, 20, 1)",
-        time: "rgba(240, 167, 20, 1)",
-        img: "/static/images/optionsTwo.svg",
-      },
-      dudeThree: {
-        bgColor: "rgba(243, 85, 85, 0.16)",
-        name: "rgba(171, 63, 63, 1)",
-        time: "rgba(243, 85, 85, 1)",
-        img: "/static/images/optionsThree.svg",
-      },
-      dudeFour: {
-        bgColor: "rgba(40, 161, 100, 0.16)",
-        name: "rgba(34, 137, 85, 1)",
-        time: "rgba(40, 161, 100, 1)",
-        img: "/static/images/optionsFour.svg",
-      },
-      openId: "",
+      dudeItem: [
+        {
+          id: Number,
+          bgColor: "rgba(67, 120, 219, 0.16);",
+          nameColor: "rgba(64, 93, 181, 1)",
+          time: "rgba(67, 120, 219, 1)",
+          img: "/static/images/optionsOne.svg",
+          profile:"",
+          name:""
+        },
+        {
+          id:Number,
+          bgColor: "rgba(240, 167, 20, 0.16)",
+          nameColor: "rgba(240, 167, 20, 1)",
+          time: "rgba(240, 167, 20, 1)",
+          img: "/static/images/optionsTwo.svg",
+          profile:"",
+          name:""
+
+        },
+        {
+          id:Number,
+          bgColor: "rgba(243, 85, 85, 0.16)",
+          nameColor: "rgba(171, 63, 63, 1)",
+          time: "rgba(243, 85, 85, 1)",
+          img: "/static/images/optionsThree.svg",
+          profile:"",
+          name:""
+
+        },
+        {
+          id:Number,
+          bgColor: "rgba(40, 161, 100, 0.16)",
+          nameColor: "rgba(34, 137, 85, 1)",
+          time: "rgba(40, 161, 100, 1)",
+          img: "/static/images/optionsFour.svg",
+          profile:"",
+          name:""
+
+        },
+      ],
+      ui: {},
+      dudeInfo: [],
     };
   },
   methods: {
@@ -178,25 +139,52 @@ export default {
       that.globalData.imgLeft =
         systemInfo.screenWidth - menuButtonInfo.right + "px";
     },
+    //判断是否登录过
+    oldUser() {
+      this.ui = wx.getStorageSync("ui");
+      if (!this.ui.openId) {
+        wx.navigateTo({
+          url: "/pages/loginone/main",
+        });
+      } else {
+        this.getData();
+        console.log("老用户");
+      }
+    },
+    //获取用户数据
+    getData() {
+      const that = this;
+      wx.cloud
+        .callFunction({
+          name: "finddude",
+          data: {
+            openId: that.ui.openId,
+          },
+        })
+        .then((res) => {
+          that.dudeInfo = res.result.data;
+          console.log(that.dudeInfo);
+        })
+        .catch((err) => {
+          console.log("读取数据库失败", err);
+        });
+    },
   },
   created() {
-    // const ui = wx.getStorageSync("ui");
-    // if (ui.openId) {
-    //   console.log(ui);
-    //   wx.navigateTo({
-    //     url: "/pages/index/main",
-    //   });
-    //   console.log("a");
-    // } else {
-    //   wx.navigateTo({
-    //     url: "/pages/loginone/main",
-    //   });
-    //   console.log("b");
-    // }
+    this.oldUser();
     this.getNav();
   },
   mounted() {},
-  computed() {},
+  computed:{
+    mergeImg(){
+      for(let i=0;i<this.dudeInfo.length;i++){
+        this.dudeItem[i].id = i;
+        this.dudeItem[i].profile = "/static/images/"+this.dudeInfo[i].name+".png";
+        this.dudeItem[i].name = this.dudeInfo[i].name
+        console.log(this.dudeItem[i].profile);
+      }
+    }
+  },
 };
 </script>
 
@@ -322,7 +310,7 @@ export default {
   right: 16px;
   top: 23px;
 }
-.dudeCard .name {
+.dudeCard .dudename {
   font-family: Poppins;
   font-size: 16px;
   position: absolute;

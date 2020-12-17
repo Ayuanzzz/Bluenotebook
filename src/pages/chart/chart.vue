@@ -11,7 +11,12 @@
         </div>
         <!-- 饼状图 -->
         <div class="chart">
-          <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
+          <mpvue-echarts
+            lazyLoad
+            :echarts="echarts"
+            :onInit="handleInit"
+            ref="echarts"
+          />
         </div>
         <!-- 心情按钮 -->
         <div class="heart" @click="happy">
@@ -21,6 +26,10 @@
         <div class="heart" style="bottom: 0px" @click="sad">
           <img src="/static/images/hate.svg" />
           <p style="color: #515151">{{ hate }}</p>
+        </div>
+        <!-- 返回主页 -->
+        <div class="home">
+          <img src="/static/images/home.png" @click="navToHome" />
         </div>
       </div>
     </div>
@@ -34,57 +43,6 @@ import echarts from "../../../static/untils/echarts.min";
 
 let chart = null;
 
-// function initChart(canvas, width, height) {
-//   chart = echarts.init(canvas, null, {
-//     width: width,
-//     height: height,
-//   });
-//   canvas.setChart(chart);
-
-//   var option = {
-//     series: [
-//       {
-//         name: "面积模式",
-//         type: "pie",
-//         radius: ["15%", "75%"],
-//         center: ["50%", "50%"],
-//         roseType: "radius",
-//         label: {
-//           show: true,
-//           fontFamily: "sans-serif",
-//           fontSize: 16,
-//         },
-//         itemStyle: {
-//           normal: {
-//             // 设置扇形的阴影
-//             shadowBlur: 30,
-//             shadowColor: "rgba(0, 0, 0, 0.3)",
-//             shadowOffsetX: 5,
-//             shadowOffsetY: 10,
-//           },
-//         },
-//         data: [
-//           {
-//             name: "52%",
-//             value: this.love,
-//             color: "#F95050",
-//           },
-//           {
-//             name: "70%",
-//             value: this.hate,
-//             itemStyle: {
-//               color: "#515151",
-//             },
-//           },
-//         ],
-//       },
-//     ],
-//   };
-
-//   chart.setOption(option);
-
-//   return chart;
-// }
 export default {
   components: {
     navBar,
@@ -93,7 +51,6 @@ export default {
   data() {
     return {
       echarts,
-      // onInit: initChart,
       showBar: false,
       barHeight: "",
       switchChecked: true,
@@ -134,20 +91,26 @@ export default {
             },
             data: [
               {
-                name: Math.ceil((this.love / (this.love + this.hate)) * 100) + "%",
+                name:
+                  Math.ceil((this.love / (this.love + this.hate)) * 100) + "%",
                 value: this.love,
+                // value:this.happyPer,
                 color: "#F95050",
               },
               {
-                name: 100-(Math.ceil((this.love / (this.love + this.hate)) * 100)) + "%",
+                name:
+                  100 -
+                  Math.ceil((this.love / (this.love + this.hate)) * 100) +
+                  "%",
                 value: this.hate,
+                // value:this.sadPer,
                 color: "#515151",
               },
             ],
           },
         ],
       };
-      this.$refs.echarts.init()
+      this.$refs.echarts.init();
     },
     handleInit(canvas, width, height) {
       (chart = echarts.init(canvas, null, {
@@ -188,7 +151,6 @@ export default {
           that.dudeObj = res.result.data[0];
           that.love = that.dudeObj.love;
           that.hate = that.dudeObj.hate;
-          // that.calcPer();
           that.initChart();
           that.judgeStatus();
           console.log("获取小伙伴信息成功");
@@ -205,17 +167,6 @@ export default {
       let onceDays = this.dudeObj.allSeconds;
       this.allSeconds = now - old + onceDays;
       this.days = Math.ceil(this.allSeconds / 86400000) + " 天";
-    },
-    //计算百分比
-    calcPer() {
-      this.happyPer = Math.ceil((this.love / (this.love + this.hate)) * 100);
-      this.sadPer = 100 - this.happyPer;
-      console.log(this.sadPer);
-      if (this.sadPer) {
-        this.chart();
-      } else {
-        console.log("百分比计算失败");
-      }
     },
     //判断状态
     judgeStatus() {
@@ -308,22 +259,18 @@ export default {
           console.log("减分失败", err);
         });
     },
+    //点击主页返回
+    navToHome() {
+      wx.navigateTo({
+        url: "/pages/index/main",
+      });
+    },
   },
   //   onLoad(options) {
   //     const that = this;
   //     that.name = options.name;
   //     console.log(that.name);
   //   },
-  // computed: {
-  //   test() {
-  //     if (this.happyPer > 0 || this.sadPer > 0) {
-  //       this.happyPer = Math.ceil((this.love / (this.love + this.hate)) * 100);
-  //       this.sadPer = 100 - this.happyPer;
-  //       console.log(this.happyPer);
-  //       console.log(this.sadPer);
-  //     }
-  //   },
-  // },
   created() {
     this.openId = wx.getStorageSync("ui").openId;
     this.dudeInfo();
@@ -409,5 +356,18 @@ export default {
   font-family: PingFang HK;
   font-size: 24px;
   color: #f95050;
+}
+
+.home {
+  position: fixed;
+  bottom: 160px;
+  right: 0;
+}
+
+.home img {
+  margin-bottom: 50px;
+  margin-right: 30px;
+  width: 30px;
+  height: 30px;
 }
 </style>
