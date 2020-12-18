@@ -4,11 +4,11 @@
     <navBar :name="navName"></navBar>
     <!-- 置顶卡片部分 -->
     <div class="card" :style="{ top: cardTop }">
-      <div class="imgRight" @click="toChart">
+      <div class="imgRight" @click="toChart(top.name)">
         <img src="/static/images/cardRight.svg" alt="cardRight" />
       </div>
       <div class="cardPerson">
-        <img :src="top.image" alt="Peter" />
+        <img :src="top.image" />
       </div>
       <div class="cardBigText">
         <p>{{ top.name }}</p>
@@ -21,7 +21,7 @@
     <div class="dude" :style="{ height: dudeHeight }">
       <div class="dudeTitle">
         <p>小伙伴</p>
-        <img src="/static/images/add.svg" alt="add" @click="toDude"/>
+        <img src="/static/images/add.svg" alt="add" @click="toDude" />
       </div>
       <div class="dudeList" :style="{ height: dudeListMaxHeight }">
         <div
@@ -31,20 +31,20 @@
           v-for="(item, index) in dudeItem"
           :key="index"
         >
-          <div class="profile">
+          <div class="profile" @click="toChart(item.name)">
             <img :src="item.profile" />
           </div>
-          <div class="optionsButton" @click="showBtn">
+          <div class="optionsButton" @click="showBtn(index)">
             <img :src="item.img" />
           </div>
           <div class="dudename" :style="{ color: item.nameColor }">
             <p>{{ item.name }}</p>
           </div>
           <div class="time" :style="{ color: item.time }">
-            <p>起始日:{{item.start}}</p>
+            <p>起始日:{{ item.start }}</p>
           </div>
-          <div class="control" v-if="isTrue">
-            <p @click="toTop(item.name)" v-show="isTrue">置顶</p>
+          <div class="control" v-if="item.show">
+            <p @click="toTop(item.name)">置顶</p>
             <hr />
             <p @click="deleteDude(item.name)">删除</p>
           </div>
@@ -62,8 +62,8 @@ export default {
   },
   data() {
     return {
-      navName:"小本子",
-      isTrue:false,
+      navName: "小本子",
+      isTrue: false,
       screenHeight: "",
       dudeHeight: "",
       navHeight: "",
@@ -84,7 +84,8 @@ export default {
           img: "/static/images/optionsOne.svg",
           profile: "",
           name: "",
-          start:"",
+          start: "",
+          show:false,
         },
         {
           id: Number,
@@ -94,7 +95,8 @@ export default {
           img: "/static/images/optionsTwo.svg",
           profile: "",
           name: "",
-          start:"",
+          start: "",
+          show: false,
         },
         {
           id: Number,
@@ -104,7 +106,8 @@ export default {
           img: "/static/images/optionsThree.svg",
           profile: "",
           name: "",
-          start:"",
+          start: "",
+          show: false,
         },
         {
           id: Number,
@@ -114,7 +117,8 @@ export default {
           img: "/static/images/optionsFour.svg",
           profile: "",
           name: "",
-          start:"",
+          start: "",
+          show: false,
         },
       ],
       ui: {},
@@ -123,21 +127,21 @@ export default {
   },
   methods: {
     //跳转至小伙伴个人界面
-    toChart(){
-      let name = this.dudeItem[0].name
+    toChart(e) {
+      // let name = this.dudeItem[0].name;
       wx.navigateTo({
-          url: "/pages/chart/main?name=" + name,
-        });
+        url: "/pages/chart/main?name=" + e,
+      });
     },
     //跳转至创建伙伴界面
-    toDude(){
+    toDude() {
       wx.navigateTo({
         url: "/pages/dude/main",
       });
     },
     //显示按钮
-    showBtn(){
-      this.isTrue = !this.isTrue;
+    showBtn(e) {
+      this.dudeItem[e].show = !this.dudeItem[e].show;
     },
     //获取导航栏参数
     getNav() {
@@ -178,7 +182,6 @@ export default {
           url: "/pages/loginone/main",
         });
       } else {
-        this.getData();
         console.log("老用户");
       }
     },
@@ -194,7 +197,7 @@ export default {
         })
         .then((res) => {
           that.dudeInfo = res.result.data;
-          console.log(that.dudeInfo);
+          that.mergeImg();
         })
         .catch((err) => {
           console.log("读取数据库失败", err);
@@ -244,6 +247,7 @@ export default {
           },
         })
         .then((res) => {
+          that.cleanArr();
           that.getData();
           that.isTrue = false;
           wx.showToast({
@@ -253,6 +257,8 @@ export default {
           });
         })
         .catch((err) => {
+          that.cleanArr();
+          that.getData();
           that.isTrue = false;
           wx.showToast({
             title: "删除失败",
@@ -261,12 +267,16 @@ export default {
           });
         });
     },
-  },
-  created() {
-    this.oldUser();
-    this.getNav();
-  },
-  computed: {
+    //清空数组
+    cleanArr() {
+      for (let i = 0; i < this.dudeItem.length; i++) {
+        this.dudeItem[i].id = Number;
+        this.dudeItem[i].name = "";
+        this.dudeItem[i].profile = "";
+        this.dudeItem[i].start = "";
+      }
+    },
+    // 预处理信息
     mergeImg() {
       for (let i = 0; i < this.dudeInfo.length; i++) {
         this.dudeItem[i].id = i;
@@ -274,8 +284,8 @@ export default {
           "/static/images/" + this.dudeInfo[i].name + ".png";
         this.dudeItem[i].name = this.dudeInfo[i].name;
         this.dudeItem[i].start = this.dudeInfo[i].startDays;
-        console.log(this.dudeItem[i].profile);
       }
+      //处理置顶信息
       this.top.image = this.dudeItem[0].profile;
       this.top.name = this.dudeItem[0].name;
       let time = new Date();
@@ -284,8 +294,16 @@ export default {
       let onceDays = this.dudeInfo[0].allSeconds;
       this.allSeconds = now - old + onceDays;
       this.top.days = Math.ceil(this.allSeconds / 86400000) + " 天";
-      console.log(dudeItem);
     },
+  },
+  created() {
+    this.getNav();
+    this.oldUser();
+  },
+  onShow() {
+    this.getData();
+    console.log(0.1/0);
+    console.log(0/0.1);
   },
 };
 </script>

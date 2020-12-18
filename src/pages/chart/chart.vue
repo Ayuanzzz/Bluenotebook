@@ -68,7 +68,9 @@ export default {
   },
   methods: {
     initChart() {
+      this.calcPer();
       this.option = {
+        calculable: true,
         series: [
           {
             type: "pie",
@@ -91,19 +93,14 @@ export default {
             },
             data: [
               {
-                name:
-                  Math.ceil((this.love / (this.love + this.hate)) * 100) + "%",
+                name: this.happyPer,
+                // Math.ceil((this.love / (this.love + this.hate+0.000000000001)) * 100) + "%",
                 value: this.love,
-                // value:this.happyPer,
                 color: "#F95050",
               },
               {
-                name:
-                  100 -
-                  Math.ceil((this.love / (this.love + this.hate)) * 100) +
-                  "%",
+                name: this.sadPer,
                 value: this.hate,
-                // value:this.sadPer,
                 color: "#515151",
               },
             ],
@@ -149,12 +146,11 @@ export default {
         })
         .then((res) => {
           that.dudeObj = res.result.data[0];
-          
+
           that.love = that.dudeObj.love;
           that.hate = that.dudeObj.hate;
           that.initChart();
           that.judgeStatus();
-          console.log(res);
           console.log("获取小伙伴信息成功");
         })
         .catch((err) => {
@@ -235,6 +231,7 @@ export default {
           },
         })
         .then((res) => {
+          that.initChart();
           console.log("加分成功");
         })
         .catch((err) => {
@@ -255,6 +252,7 @@ export default {
           },
         })
         .then((res) => {
+          that.initChart();
           console.log("减分成功");
         })
         .catch((err) => {
@@ -267,21 +265,37 @@ export default {
         url: "/pages/index/main",
       });
     },
-  },
-    onLoad(options) {
-      const that = this;
-      that.name = options.name;
-      console.log(that.name);
-      this.openId = wx.getStorageSync("ui").openId;
-      this.dudeInfo();
+    //计算百分比
+    calcPer() {
+      if ((this.love == 0) & (this.hate == 0)) {
+        this.happyPer = "0%";
+        this.sadPer = "0%";
+      } else if ((this.love == 0) & (this.hate > 0)) {
+        this.happyPer = "0%";
+        this.sadPer = "100%";
+      } else if ((this.hate == 0) & (this.love > 0)) {
+        this.sadPer = "0%";
+        this.happyPer = "100%";
+      } else {
+        this.happyPer =
+          Math.ceil((this.love / (this.love + this.hate)) * 100) + "%";
+        this.sadPer =
+          100 - Math.ceil((this.love / (this.love + this.hate)) * 100) + "%";
+      }
     },
-  created() {
-    
+  },
+  onLoad(options) {
+    const that = this;
+    that.name = options.name;
+    console.log(that.name);
+    this.openId = wx.getStorageSync("ui").openId;
+    this.dudeInfo();
   },
   mounted() {
     this.barHeight = this.globalData.barHeight;
     this.barShow();
   },
+  computed: {},
 };
 </script>
 
