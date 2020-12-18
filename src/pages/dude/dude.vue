@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 导航栏 -->
-    <navBar></navBar>
+    <navBar :name="navName"></navBar>
     <div class="wrap">
       <!-- 选择器 -->
       <div class="picker">
@@ -39,6 +39,7 @@ export default {
   },
   data() {
     return {
+      navName:"小本子",
       openId: "",
       container: "",
       dudeImg: "/static/images/Peter.png",
@@ -49,11 +50,16 @@ export default {
       leftBtn: true,
       rightBtn: true,
       dudeList: [],
-      time1: "",
-      time2: "",
+      startDays: "",
     };
   },
   methods: {
+    //时间格式化
+    timeformat() {
+      const that = this;
+      var util = require("../../utils/index.js");
+      that.startDays = util.formatTime(new Date());
+    },
     //选择卡片
     leftCard() {
       this.count--;
@@ -66,6 +72,8 @@ export default {
       const that = this;
       let time = new Date();
       that.startTime = time.getTime();
+      that.timeformat();
+      console.log(that.startDays);
       wx.cloud
         .callFunction({
           name: "adddude",
@@ -74,13 +82,13 @@ export default {
             name: that.name,
             status: "doing",
             startTime: that.startTime,
+            startDays: that.startDays,
             allSeconds: 0,
             love: 0,
             hate: 0,
           },
         })
         .then((res) => {
-          console.log(res);
           console.log("写入数据库成功");
         })
         .catch((err) => {
@@ -241,6 +249,4 @@ export default {
   color: #4378db;
   text-align: center;
 }
-
-
 </style>

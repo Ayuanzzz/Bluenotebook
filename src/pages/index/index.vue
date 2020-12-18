@@ -1,46 +1,52 @@
 <template>
   <div class="container">
     <!-- 导航栏 -->
-    <navBar></navBar>
+    <navBar :name="navName"></navBar>
     <!-- 置顶卡片部分 -->
     <div class="card" :style="{ top: cardTop }">
-      <div class="imgRight">
+      <div class="imgRight" @click="toChart">
         <img src="/static/images/cardRight.svg" alt="cardRight" />
       </div>
       <div class="cardPerson">
-        <img src="/static/images/Peter.png" alt="Peter" />
+        <img :src="top.image" alt="Peter" />
       </div>
       <div class="cardBigText">
-        <p>Jack</p>
+        <p>{{ top.name }}</p>
       </div>
       <div class="cardSmallText">
-        <p>34天</p>
+        <p>{{ top.days }}</p>
       </div>
     </div>
     <!-- 小伙伴列表 -->
     <div class="dude" :style="{ height: dudeHeight }">
       <div class="dudeTitle">
         <p>小伙伴</p>
-        <img src="/static/images/add.svg" alt="add" />
+        <img src="/static/images/add.svg" alt="add" @click="toDude"/>
       </div>
-      <div class="dudeList" :style="{ height: dudeListMaxHeight }" >
-        <div class="dudeCard" :style="{ backgroundColor: item.bgColor }" v-show="item.id+1" v-for="(item,index) in dudeItem" :key="index" >
+      <div class="dudeList" :style="{ height: dudeListMaxHeight }">
+        <div
+          class="dudeCard"
+          :style="{ backgroundColor: item.bgColor }"
+          v-show="item.id + 1"
+          v-for="(item, index) in dudeItem"
+          :key="index"
+        >
           <div class="profile">
-            <img :src="item.profile">
+            <img :src="item.profile" />
           </div>
-          <div class="optionsButton">
-            <img :src="item.img" >
+          <div class="optionsButton" @click="showBtn">
+            <img :src="item.img" />
           </div>
           <div class="dudename" :style="{ color: item.nameColor }">
             <p>{{ item.name }}</p>
           </div>
           <div class="time" :style="{ color: item.time }">
-            <p>起始日:2020.08.11</p>
+            <p>起始日:{{item.start}}</p>
           </div>
-          <div class="control">
-            <p>置顶</p>
+          <div class="control" v-if="isTrue">
+            <p @click="toTop(item.name)" v-show="isTrue">置顶</p>
             <hr />
-            <p>删除</p>
+            <p @click="deleteDude(item.name)">删除</p>
           </div>
         </div>
       </div>
@@ -56,12 +62,19 @@ export default {
   },
   data() {
     return {
+      navName:"小本子",
+      isTrue:false,
       screenHeight: "",
       dudeHeight: "",
       navHeight: "",
       cardTop: "",
       dudeListMaxHeight: "",
       scale: "",
+      top: {
+        image: "",
+        name: "",
+        days: "",
+      },
       dudeItem: [
         {
           id: Number,
@@ -69,38 +82,39 @@ export default {
           nameColor: "rgba(64, 93, 181, 1)",
           time: "rgba(67, 120, 219, 1)",
           img: "/static/images/optionsOne.svg",
-          profile:"",
-          name:""
+          profile: "",
+          name: "",
+          start:"",
         },
         {
-          id:Number,
+          id: Number,
           bgColor: "rgba(240, 167, 20, 0.16)",
           nameColor: "rgba(240, 167, 20, 1)",
           time: "rgba(240, 167, 20, 1)",
           img: "/static/images/optionsTwo.svg",
-          profile:"",
-          name:""
-
+          profile: "",
+          name: "",
+          start:"",
         },
         {
-          id:Number,
+          id: Number,
           bgColor: "rgba(243, 85, 85, 0.16)",
           nameColor: "rgba(171, 63, 63, 1)",
           time: "rgba(243, 85, 85, 1)",
           img: "/static/images/optionsThree.svg",
-          profile:"",
-          name:""
-
+          profile: "",
+          name: "",
+          start:"",
         },
         {
-          id:Number,
+          id: Number,
           bgColor: "rgba(40, 161, 100, 0.16)",
           nameColor: "rgba(34, 137, 85, 1)",
           time: "rgba(40, 161, 100, 1)",
           img: "/static/images/optionsFour.svg",
-          profile:"",
-          name:""
-
+          profile: "",
+          name: "",
+          start:"",
         },
       ],
       ui: {},
@@ -108,6 +122,23 @@ export default {
     };
   },
   methods: {
+    //跳转至小伙伴个人界面
+    toChart(){
+      let name = this.dudeItem[0].name
+      wx.navigateTo({
+          url: "/pages/chart/main?name=" + name,
+        });
+    },
+    //跳转至创建伙伴界面
+    toDude(){
+      wx.navigateTo({
+        url: "/pages/dude/main",
+      });
+    },
+    //显示按钮
+    showBtn(){
+      this.isTrue = !this.isTrue;
+    },
     //获取导航栏参数
     getNav() {
       let that = this;
@@ -169,21 +200,92 @@ export default {
           console.log("读取数据库失败", err);
         });
     },
+    //置顶
+    toTop(e) {
+      let time = new Date();
+      let now = time.getTime();
+      const that = this;
+      wx.cloud
+        .callFunction({
+          name: "updatetop",
+          data: {
+            openId: that.ui.openId,
+            name: e,
+            top: now,
+          },
+        })
+        .then((res) => {
+          that.getData();
+          that.isTrue = false;
+          wx.showToast({
+            title: "置顶成功",
+            icon: "success",
+            duration: 2000,
+          });
+        })
+        .catch((err) => {
+          that.isTrue = false;
+          wx.showToast({
+            title: "置顶失败",
+            icon: "error",
+            duration: 2000,
+          });
+        });
+    },
+    //删除
+    deleteDude(e) {
+      const that = this;
+      wx.cloud
+        .callFunction({
+          name: "removedude",
+          data: {
+            openId: that.ui.openId,
+            name: e,
+          },
+        })
+        .then((res) => {
+          that.getData();
+          that.isTrue = false;
+          wx.showToast({
+            title: "删除成功",
+            icon: "success",
+            duration: 2000,
+          });
+        })
+        .catch((err) => {
+          that.isTrue = false;
+          wx.showToast({
+            title: "删除失败",
+            icon: "error",
+            duration: 2000,
+          });
+        });
+    },
   },
   created() {
     this.oldUser();
     this.getNav();
   },
-  mounted() {},
-  computed:{
-    mergeImg(){
-      for(let i=0;i<this.dudeInfo.length;i++){
+  computed: {
+    mergeImg() {
+      for (let i = 0; i < this.dudeInfo.length; i++) {
         this.dudeItem[i].id = i;
-        this.dudeItem[i].profile = "/static/images/"+this.dudeInfo[i].name+".png";
-        this.dudeItem[i].name = this.dudeInfo[i].name
+        this.dudeItem[i].profile =
+          "/static/images/" + this.dudeInfo[i].name + ".png";
+        this.dudeItem[i].name = this.dudeInfo[i].name;
+        this.dudeItem[i].start = this.dudeInfo[i].startDays;
         console.log(this.dudeItem[i].profile);
       }
-    }
+      this.top.image = this.dudeItem[0].profile;
+      this.top.name = this.dudeItem[0].name;
+      let time = new Date();
+      let now = time.getTime();
+      let old = this.dudeInfo[0].startTime;
+      let onceDays = this.dudeInfo[0].allSeconds;
+      this.allSeconds = now - old + onceDays;
+      this.top.days = Math.ceil(this.allSeconds / 86400000) + " 天";
+      console.log(dudeItem);
+    },
   },
 };
 </script>

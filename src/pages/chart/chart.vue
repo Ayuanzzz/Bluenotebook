@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 导航栏 -->
-    <navBar></navBar>
+    <navBar :name="name"></navBar>
     <div class="bar" :style="{ height: barHeight }" v-if="showBar">
       <div class="wrap">
         <!-- 时间开光 -->
@@ -144,15 +144,17 @@ export default {
           name: "getonedude",
           data: {
             openId: that.openId,
-            name: "Jessica",
+            name: that.name,
           },
         })
         .then((res) => {
           that.dudeObj = res.result.data[0];
+          
           that.love = that.dudeObj.love;
           that.hate = that.dudeObj.hate;
           that.initChart();
           that.judgeStatus();
+          console.log(res);
           console.log("获取小伙伴信息成功");
         })
         .catch((err) => {
@@ -228,7 +230,7 @@ export default {
           name: "addscore",
           data: {
             openId: that.openId,
-            name: "Jessica",
+            name: that.name,
             love: that.love,
           },
         })
@@ -248,7 +250,7 @@ export default {
           name: "cutscore",
           data: {
             openId: that.openId,
-            name: "Jessica",
+            name: that.name,
             hate: that.hate,
           },
         })
@@ -266,14 +268,15 @@ export default {
       });
     },
   },
-  //   onLoad(options) {
-  //     const that = this;
-  //     that.name = options.name;
-  //     console.log(that.name);
-  //   },
+    onLoad(options) {
+      const that = this;
+      that.name = options.name;
+      console.log(that.name);
+      this.openId = wx.getStorageSync("ui").openId;
+      this.dudeInfo();
+    },
   created() {
-    this.openId = wx.getStorageSync("ui").openId;
-    this.dudeInfo();
+    
   },
   mounted() {
     this.barHeight = this.globalData.barHeight;

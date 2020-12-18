@@ -11,6 +11,7 @@ exports.main = async (event, context) => {
         openId:event.openId,
         name:event.name,
         startTime:event.startTime,
+        startDays:event.startDays,
         allSeconds:event.allSeconds,
         status:event.status,
         love:event.love,

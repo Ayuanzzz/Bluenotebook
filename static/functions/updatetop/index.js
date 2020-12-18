@@ -8,8 +8,12 @@ const db = cloud.database()
 exports.main = async (event, context) => {
   return await db.collection('demo2')
     .where({
-      openId: event.openId
+      openId: event.openId,
+      name:event.name
     })
-    .orderBy('top', 'desc')
-    .get()
+    .update({
+      data:{
+        top:event.top
+      }
+    })
 }
