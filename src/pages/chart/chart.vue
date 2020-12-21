@@ -29,7 +29,7 @@
         </div>
         <!-- 返回主页 -->
         <div class="home">
-          <img src="/static/images/home.png" @click="navToHome" />
+          <img src="/static/images/home.svg" @click="navToHome" />
         </div>
       </div>
     </div>
@@ -94,7 +94,6 @@ export default {
             data: [
               {
                 name: this.happyPer,
-                // Math.ceil((this.love / (this.love + this.hate+0.000000000001)) * 100) + "%",
                 value: this.love,
                 color: "#F95050",
               },
@@ -261,9 +260,16 @@ export default {
     },
     //点击主页返回
     navToHome() {
-      wx.navigateTo({
-        url: "/pages/index/main",
-      });
+      let url = "/pages/me/main";
+      if (getCurrentPages().length >= 10) {
+        wx.redirectTo({
+          url,
+        });
+      } else {
+        wx.navigateTo({
+          url,
+        });
+      }
     },
     //计算百分比
     calcPer() {
@@ -291,7 +297,7 @@ export default {
     this.openId = wx.getStorageSync("ui").openId;
     this.dudeInfo();
   },
-  mounted() {
+  onShow() {
     this.barHeight = this.globalData.barHeight;
     this.barShow();
   },
@@ -377,14 +383,14 @@ export default {
 
 .home {
   position: fixed;
-  bottom: 160px;
+  bottom: 0;
   right: 0;
 }
 
 .home img {
-  margin-bottom: 50px;
-  margin-right: 30px;
-  width: 30px;
-  height: 30px;
+  margin-bottom: 20px;
+  margin-right: 20px;
+  width: 50px;
+  height: 50px;
 }
 </style>

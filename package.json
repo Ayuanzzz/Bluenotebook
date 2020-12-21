@@ -25,6 +25,7 @@
   "dependencies": {
     "mpvue": "^2.0.0",
     "mpvue-echarts": "^0.3.2",
+    "mpvue-loading": "^1.0.0",
     "vuex": "^3.0.1",
     "wx-server-sdk": "^2.3.2"
   },

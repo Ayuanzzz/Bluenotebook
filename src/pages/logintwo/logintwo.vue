@@ -32,7 +32,7 @@ export default {
           });
     }
   },
-  created(){
+  onLoad(){
     this.getUi()
   }
 };

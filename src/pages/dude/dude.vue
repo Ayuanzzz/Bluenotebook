@@ -5,19 +5,18 @@
     <div class="wrap">
       <!-- 选择器 -->
       <div class="picker">
-        <div class="left">
-          <img :src="leftImg" alt="left" @click="leftCard" v-show="leftBtn" />
+        <div class="left" @click="leftCard">
+          <img :src="leftImg" alt="left"  v-show="leftBtn" />
         </div>
-        <div class="right">
+        <div class="right" @click="rightCard">
           <img
             :src="rightImg"
             alt="right"
-            @click="rightCard"
             v-show="rightBtn"
           />
         </div>
         <div class="card">
-          <img :src="dudeImg" @click="test2" />
+          <img :src="dudeImg" />
         </div>
         <div class="name">
           <p>{{ name }}</p>
@@ -27,6 +26,10 @@
       <div class="btn" @click="checkDude">
         <p>创建</p>
       </div>
+      <!-- 返回主页 -->
+        <div class="home">
+          <img src="/static/images/home.svg" @click="navToHome" />
+        </div>
     </div>
   </div>
 </template>
@@ -39,7 +42,7 @@ export default {
   },
   data() {
     return {
-      navName:"小本子",
+      navName: "小本子",
       openId: "",
       container: "",
       dudeImg: "/static/images/Peter.png",
@@ -54,6 +57,19 @@ export default {
     };
   },
   methods: {
+    //点击主页返回
+    navToHome() {
+      let url = "/pages/me/main";
+      if (getCurrentPages().length >= 10) {
+        wx.redirectTo({
+          url,
+        });
+      } else {
+        wx.navigateTo({
+          url,
+        });
+      }
+    },
     //时间格式化
     timeformat() {
       const that = this;
@@ -63,9 +79,25 @@ export default {
     //选择卡片
     leftCard() {
       this.count--;
+      this.cardChange();
     },
     rightCard() {
       this.count++;
+      this.cardChange();
+    },
+    //切换卡片
+    cardChange() {
+      const dude = ["Peter", "Vanessa", "Jonathan", "Jessica"];
+      this.name = dude[this.count];
+      this.dudeImg = "/static/images/" + dude[this.count] + ".png";
+      if (this.count <= 0) {
+        this.leftBtn = false;
+      } else if (this.count >= 3) {
+        this.rightBtn = false;
+      } else {
+        this.leftBtn = true;
+        this.rightBtn = true;
+      }
     },
     //创建小伙伴
     adddude() {
@@ -98,6 +130,7 @@ export default {
     //获取小伙伴列表
     getdude() {
       const that = this;
+      that.dudeList = [];
       wx.cloud
         .callFunction({
           name: "finddude",
@@ -110,6 +143,7 @@ export default {
           for (let i = 0; i < dudeinfo.length; i++) {
             that.dudeList.push(dudeinfo[i].name);
           }
+          console.log(that.dudeList);
           console.log("拉取小伙伴列表成功");
         })
         .catch((err) => {
@@ -133,26 +167,11 @@ export default {
       }
     },
   },
-  computed: {
-    cardChange() {
-      const dude = ["Peter", "Vanessa", "Jonathan", "Jessica"];
-      this.name = dude[this.count];
-      this.dudeImg = "/static/images/" + dude[this.count] + ".png";
-      if (this.count <= 0) {
-        this.leftBtn = false;
-      } else if (this.count >= 3) {
-        this.rightBtn = false;
-      } else {
-        this.leftBtn = true;
-        this.rightBtn = true;
-      }
-    },
-  },
-  created() {
+  onLoad() {
     this.openId = wx.getStorageSync("ui").openId;
-    console.log(this.openId);
+    this.cardChange();
   },
-  mounted() {
+  onShow() {
     this.getdude();
   },
 };
@@ -172,7 +191,7 @@ export default {
 .wrap {
   position: absolute;
   width: 241px;
-  height: 370px;
+  height: 390px;
   display: flex;
   justify-content: center;
 }
@@ -248,5 +267,17 @@ export default {
   line-height: 45px;
   color: #4378db;
   text-align: center;
+}
+.home {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+
+.home img {
+  margin-bottom: 20px;
+  margin-right: 20px;
+  width: 50px;
+  height: 50px;
 }
 </style>
