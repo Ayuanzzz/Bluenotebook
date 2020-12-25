@@ -274,6 +274,7 @@ export default {
     //计算百分比
     calcPer() {
       if ((this.love == 0) & (this.hate == 0)) {
+        console.log(1);
         this.happyPer = "0%";
         this.sadPer = "0%";
       } else if ((this.love == 0) & (this.hate > 0)) {

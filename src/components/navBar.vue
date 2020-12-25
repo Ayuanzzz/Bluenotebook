@@ -63,6 +63,7 @@ export default {
   position: absolute;
   display: flex;
   align-content: center;
+  text-align: center;
 }
 .navBar div p {
   font-family: PingFang SC;

@@ -33,7 +33,8 @@ export default {
       }
     },
   },
-  created() {
+  onLoad() {
+    console.log("indexOnLOAD");
     this.oldUser();
   },
 };

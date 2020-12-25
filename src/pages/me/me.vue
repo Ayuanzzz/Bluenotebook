@@ -200,18 +200,7 @@ export default {
       that.globalData.imgLeft =
         systemInfo.screenWidth - menuButtonInfo.right + "px";
     },
-    //判断是否登录过
-    // oldUser() {
-    //   this.ui = wx.getStorageSync("ui");
-    //   if (!this.ui.openId) {
-    //     wx.navigateTo({
-    //       url: "/pages/loginone/main",
-    //     });
-    //   } else {
-    //     console.log("老用户");
-    //   }
-    // },
-    //获取用户数据
+    //获取小伙伴数据
     getData() {
       const that = this;
       that.ui = wx.getStorageSync("ui");
@@ -225,7 +214,11 @@ export default {
         .then((res) => {
           console.log(res);
           that.dudeInfo = res.result.data;
-          that.mergeImg();
+          if (that.dudeInfo[0]) {
+            that.mergeImg();
+          } else {
+            that.toDude();
+          }
           that.showLoader = false;
           that.isTrue = false;
         })
@@ -239,6 +232,7 @@ export default {
       let now = time.getTime();
       const that = this;
       that.showBtn(that.btnId);
+      that.showLoader = true;
       wx.cloud
         .callFunction({
           name: "updatetop",
@@ -329,7 +323,6 @@ export default {
     this.getNav();
   },
   onShow() {
-    console.log("onReady");
     this.getData();
   },
 };

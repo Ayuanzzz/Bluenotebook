@@ -1,19 +1,17 @@
 <template>
   <div class="container">
+    <!-- 加载动画 -->
+    <loader v-if="showLoader"></loader>
     <!-- 导航栏 -->
     <navBar :name="navName"></navBar>
     <div class="wrap">
       <!-- 选择器 -->
       <div class="picker">
         <div class="left" @click="leftCard">
-          <img :src="leftImg" alt="left"  v-show="leftBtn" />
+          <img :src="leftImg" alt="left" v-show="leftBtn" />
         </div>
         <div class="right" @click="rightCard">
-          <img
-            :src="rightImg"
-            alt="right"
-            v-show="rightBtn"
-          />
+          <img :src="rightImg" alt="right" v-show="rightBtn" />
         </div>
         <div class="card">
           <img :src="dudeImg" />
@@ -27,21 +25,24 @@
         <p>创建</p>
       </div>
       <!-- 返回主页 -->
-        <div class="home">
-          <img src="/static/images/home.svg" @click="navToHome" />
-        </div>
+      <div class="home">
+        <img src="/static/images/home.svg" @click="navToHome" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import navBar from "@/components/navBar";
+import loader from "@/components/loader";
 export default {
   components: {
     navBar,
+    loader,
   },
   data() {
     return {
+      showLoader:false,
       navName: "小本子",
       openId: "",
       container: "",
@@ -121,6 +122,7 @@ export default {
           },
         })
         .then((res) => {
+          that.showLoader = false;
           console.log("写入数据库成功");
         })
         .catch((err) => {
@@ -159,11 +161,19 @@ export default {
           icon: "none",
         });
       } else {
+        this.showLoader = true;
         this.adddude();
         let name = this.name;
-        wx.navigateTo({
-          url: "/pages/chart/main?name=" + name,
-        });
+        let url = "/pages/chart/main?name=" + name;
+        if (getCurrentPages().length >= 10) {
+          wx.redirectTo({
+            url,
+          });
+        } else {
+          wx.navigateTo({
+            url,
+          });
+        }
       }
     },
   },

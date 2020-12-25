@@ -1,10 +1,9 @@
 <template>
-  <div class="container">
-    <div class="wrap">
-      <div class="title">
-        <p class="big">小本子</p>
-        <p class="small">怨你恋你。都记一笔</p>
-      </div>
+  <div class="container" style="{margin-top:navTop}">
+    <div class="title">
+      <p class="big">小本子</p>
+    </div>
+    <div class="dude">
       <div class="wawa">
         <img src="/static/images/wawa.png" />
       </div>
@@ -17,24 +16,30 @@
       <div class="jonathan">
         <img src="/static/images/Jonathan.png" />
       </div>
-      <div class="btn">
-        <button
-          plain = "true"
-          open-type="getUserInfo"
-          lang="zh_CN"
-          @getuserinfo="onGotUserInfo"
-        >
-          授权登录
-        </button>
-      </div>
     </div>
+    <p>在这里，你可以创建好友</p>
+    <img class="phone" src="cloud://huhucloud-phuu5.6875-huhucloud-phuu5-1302876511/1.jpg" />
+    <p>记录开心或难过的次数</p>
+    <img class="phone" src="cloud://huhucloud-phuu5.6875-huhucloud-phuu5-1302876511/2.jpg" />
+    <p>最多可创建四位好友</p>
+    <img class="phone" src="cloud://huhucloud-phuu5.6875-huhucloud-phuu5-1302876511/3.jpg" />
+    <button
+      class="btn"
+      open-type="getUserInfo"
+      lang="zh_CN"
+      @getuserinfo="onGotUserInfo"
+    >
+      体验一下
+    </button>
   </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {};
+    return {
+      navTop:this.globalData.navHeight
+    };
   },
   methods: {
     onGotUserInfo: function (e) {
@@ -64,27 +69,26 @@ export default {
 <style>
 .container {
   position: relative;
-  background-color: #f2f5f8;
+  margin-top: 80px;
+  margin-bottom: 30px;
   width: 100%;
-  height: 100%;
+  height: 1748px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
 }
-.wrap {
-  width: 252px;
-  height: 583px;
+
+.title {
+  width: 269px;
+  height: 55px;
+  color: rgba(67, 120, 219, 1);
   position: relative;
 }
-.title {
-  position: absolute;
-  width: 158px;
-  height: 104px;
-  left: 0px;
-  top: 0px;
-  color: rgba(67, 120, 219, 1);
-}
+
 .title .big {
+  position: absolute;
+  left: 0;
   font-family: Abadi MT Condensed Extra Bold;
   font-style: normal;
   font-weight: bold;
@@ -92,88 +96,64 @@ export default {
   line-height: 55px;
   letter-spacing: 7px;
 }
-.title .small {
+
+.dude {
+  width: 269px;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.dude div {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dude img {
+  width: 32px;
+  height: 32px;
+}
+
+.dude .wawa {
+  background-color: rgba(40, 161, 100, 0.3);
+}
+.dude .peter {
+  background-color: rgba(67, 120, 219, 0.3);
+}
+.dude .jonathan {
+  background-color: rgba(253, 205, 85, 0.4);
+}
+.dude .vanessa {
+  background-color: rgba(243, 85, 85, 0.4);
+}
+
+p {
   font-family: PingFang HK;
   font-style: normal;
-  font-weight: normal;
-  font-size: 18px;
-  line-height: 25px;
-  letter-spacing: -0.3px;
-  margin-top: 24px;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 34px;
+  text-align: center;
+  color: #4378db;
 }
-.wawa {
-  position: absolute;
-  width: 46px;
-  height: 46px;
-  right: 43px;
-  top: 128px;
-  border-radius: 50%;
-  background-color: rgba(243, 85, 85, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+
+.phone {
+  width: 220px;
+  height: 395px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
-.wawa img {
-  width: 30px;
-  height: 30px;
-}
-.peter {
-  position: absolute;
-  width: 93px;
-  height: 93px;
-  left: 35px;
-  top: 196px;
-  border-radius: 50%;
-  background-color: rgba(67, 120, 219, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.peter img {
-  width: 61px;
-  height: 61px;
-}
-.vanessa {
-  position: absolute;
-  width: 46px;
-  height: 46px;
-  left: 190px;
-  top: 298px;
-  border-radius: 50%;
-  background-color: rgba(253, 205, 85, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.vanessa img {
-  width: 30px;
-  height: 30px;
-}
-.jonathan {
-  position: absolute;
-  width: 67px;
-  height: 67px;
-  left: 102px;
-  top: 384px;
-  border-radius: 50%;
-  background-color: rgba(40, 161, 100, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.jonathan img {
-  width: 51px;
-  height: 51px;
-}
-.btn button {
-  position: absolute;
+
+.btn {
   width: 212px;
   height: 45px;
-  bottom: 0px;
-  left: 20px;
   background-color: #ffffff;
+  border-radius: 58px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 30px;
   font-family: PingFang HK;
   font-weight: bold;
   font-size: 23px;
@@ -181,7 +161,8 @@ export default {
   color: #4378db;
   text-align: center;
 }
-.btn button[plain]{
-  border:none
+.btn::after{
+  border:0;
 }
+
 </style>
