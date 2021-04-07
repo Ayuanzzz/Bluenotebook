@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    图表
+    作者
   </div>
 </template>
 
@@ -10,6 +10,6 @@ export default {
 }
 </script>
 
-<style lang='scss'>
+<style lang='sass'>
 
 </style>

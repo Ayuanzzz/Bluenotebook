@@ -25,10 +25,10 @@ export default {
   data() {
     return {
       Avatar: "",
-      navHeight: this.globalData.navHeight,
-      imgHeight: this.globalData.imgHeight,
-      imgTop: this.globalData.imgTop,
-      imgLeft: this.globalData.imgLeft,
+      navHeight: "88px",
+      imgHeight: "35px",
+      imgTop: "44px",
+      imgLeft: "26px",
       textTop: this.globalData.textTop,
     };
   },
@@ -49,30 +49,31 @@ export default {
 };
 </script>
 
-<style>
+<style lang='scss'>
 .navBar {
-  display: flex;
-  justify-content: center;
-  background-color: #f2f5f8;
-}
-.navBar img {
-  position: absolute;
-  border-radius: 50%;
-}
-.navBar div {
-  position: absolute;
-  display: flex;
-  align-content: center;
-  text-align: center;
-}
-.navBar div p {
-  font-family: PingFang SC;
-}
-.navBar hr {
-  height: 1px;
+  border: 1px solid red;
   width: 100%;
-  position: absolute;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.22);
+  background-color: #f2f5f8;
+  img {
+    border:1px solid pink;
+    position: absolute;
+    border-radius: 50%;
+  }
+  div {
+    border: 1px solid blue;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    p {
+      font-family: PingFang SC;
+    }
+  }
+  hr {
+    height: 1px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.22);
+  }
 }
 </style>
