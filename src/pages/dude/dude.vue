@@ -6,9 +6,7 @@
         <img src="/static/images/cardRight.svg" />
       </div>
       <div class="cardPerson">
-        <svg class="icon" aria-hidden="true">
-          <use xlink:href="#icon-iconfinder__deer_"></use>
-        </svg>
+        <img src="/static/images/bigicon/iconfinder__deer_.png" alt="" />
       </div>
       <div class="cardBigText">
         <p>clue</p>
@@ -37,13 +35,6 @@ export default {
 </script>
 
 <style lang='scss'>
-.icon {
-  width: 1em;
-  height: 1em;
-  vertical-align: -0.15em;
-  fill: currentColor;
-  overflow: hidden;
-}
 .container {
   width: 100%;
 }
@@ -56,6 +47,28 @@ export default {
   background-color: #4378db;
   border-radius: 26px;
   box-shadow: 10px 15px 5px rgba(67, 120, 219, 0.2);
+  .imgRight {
+    img {
+      position: absolute;
+      width: 56px;
+      height: 54px;
+      right: 0;
+    }
+  }
+  .cardPerson {
+    position: absolute;
+    width: 97px;
+    height: 97px;
+    top: 25px;
+    left: 37px;
+    background-color: #ffffff;
+    border-radius: 25px;
+    img {
+      margin: auto;
+      width: 82px;
+      height: 82px;
+    }
+  }
 }
 .dudeList {
   border: 1px solid orange;
