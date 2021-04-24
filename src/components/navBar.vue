@@ -29,7 +29,7 @@ export default {
       imgHeight: "35px",
       imgTop: "44px",
       imgLeft: "26px",
-      textTop: this.globalData.textTop,
+      // textTop: this.globalData.textTop,
     };
   },
   methods: {
