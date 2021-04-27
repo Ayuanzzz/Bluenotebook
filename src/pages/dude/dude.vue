@@ -2,7 +2,7 @@
   <div class="container">
     <navBar :name="navName"></navBar>
     <div class="card">
-      <span class="right"></span>
+      <span class="btnRight" id="icon"></span>
       <div class="cardPerson">
         <img src="/static/images/bigicon/iconfinder__deer_.png" alt="" />
       </div>
@@ -10,7 +10,27 @@
       <p>30天 | 已结束</p>
     </div>
 
-    <div class="dudeList"></div>
+    <div class="dudeList">
+      <div class="title">
+        <p>按创建日期排序</p>
+        <span class="btnDown" id="icon"></span>
+        <span class="btnAdd" id="icon"></span>
+        <p>添加</p>
+      </div>
+      <ul class="dudeWrapper">
+        <li class="dude">
+          <div class="profile">
+            <img src="/static/images/bigicon/iconfinder__deer_.png" alt="" />
+          </div>
+          <span class="btnOption" id="icon" @click="clickOption()"></span>
+          <a href="#" class="name">蛙蛙</a>
+          <p class="time">起始日:2020.08.11</p>
+          <div class="mask" v-if="showMask"></div>
+        </li>
+        <li class="dude"></li>
+        <li class="dude"></li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -23,9 +43,15 @@ export default {
   data() {
     return {
       navName: "小本子",
+      showMask:false
     };
   },
-  methods: {},
+  methods: {
+    clickOption(){
+      this.showMask = !this.showMask
+      console.log(this.showMask);
+    }
+  },
 };
 </script>
 
@@ -33,8 +59,16 @@ export default {
 .container {
   width: 100%;
 }
-span {
+#icon {
   display: inline-block;
+  background-image: url("https://6875-huhucloud-phuu5-1302876511.tcb.qcloud.la/icon.png?sign=553b6202a71c29ce97403283da9ef739&t=1618873925");
+  background-size: 97px 493px;
+}
+p {
+  font-family: PingFang HK;
+}
+a{
+  font-family: PingFang HK;
 }
 .card {
   position: relative;
@@ -44,11 +78,9 @@ span {
   background-color: #4378db;
   border-radius: 26px;
   box-shadow: 10px 15px 5px rgba(64, 71, 85, 0.2);
-  .right {
+  .btnRight {
     position: absolute;
-    background: url("https://6875-huhucloud-phuu5-1302876511.tcb.qcloud.la/icon.png?sign=553b6202a71c29ce97403283da9ef739&t=1618873925")
-      no-repeat -19px -35px;
-    background-size: 97px 493px;
+    background: no-repeat -19px -35px;
     width: 56px;
     height: 54px;
     top: 0;
@@ -73,7 +105,6 @@ span {
   }
   p {
     position: absolute;
-    font-family: PingFang HK;
     color: #ffffff;
   }
   p:nth-child(3) {
@@ -92,6 +123,97 @@ span {
 .dudeList {
   border: 1px solid orange;
   width: 100%;
-  background-color: #fff;
+  height: 444px;
+  overflow: hidden;
+  border-radius: 16px 16px 0px 0px;
+  background-color: #ffffff;
+  .title {
+    width: 328px;
+    height: 25px;
+    margin: 25px auto 30px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    p {
+      color: #21205a;
+      font-size: 18px;
+    }
+    .btnDown {
+      height: 7px;
+      width: 11.5px;
+      margin-right: 120px;
+      background: no-repeat -41px -175px;
+    }
+    .btnAdd {
+      width: 15px;
+      height: 15px;
+      background: no-repeat -38px -124px;
+    }
+  }
+  .dudeWrapper {
+    border: 1px solid red;
+    width: 346px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    .dude {
+      background-color:rgba(67, 120, 219, 0.16);
+      position: relative;
+      width: 165px;
+      height: 125px;
+      margin-bottom: 16px;
+      border-radius: 16px;
+      .profile {
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        left: 20px;
+        top: 19px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img {
+          width: 23px;
+          height: 23px;
+        }
+      }
+      .btnOption {
+        position: absolute;
+        top: 24px;
+        left: 125px;
+        width: 24px;
+        height: 24px;
+        background: no-repeat -34px -216.96px;
+      }
+      .name {
+        position: absolute;
+        left: 21px;
+        top: 64px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #405db5;
+      }
+      .time {
+        position: absolute;
+        left: 16px;
+        top: 92px;
+        font-size: 16px;
+        font-weight: 400;
+        color: #4378db;
+      }
+      .mask{
+        position: absolute;
+        left: 16px;
+        top: 13px;
+        width: 96px;
+        height: 101.5px;
+        background: rgba(81, 81, 81, 0.9);
+        border-radius: 4.35px;
+      }
+    }
+  }
 }
 </style>
