@@ -12,8 +12,8 @@
 
     <div class="dudeList">
       <div class="title">
-        <p>按创建日期排序</p>
-        <span class="btnDown" id="icon"></span>
+        <p>按{{ arrangement }}排序</p>
+        <span class="btnDown" id="icon" @click="clickBtnDown()"></span>
         <span class="btnAdd" id="icon"></span>
         <p>添加</p>
       </div>
@@ -25,7 +25,12 @@
           <span class="btnOption" id="icon" @click="clickOption()"></span>
           <a href="#" class="name">蛙蛙</a>
           <p class="time">起始日:2020.08.11</p>
-          <div class="mask" v-if="showMask"></div>
+          <div class="option" v-if="showOption">
+            <ul>
+              <li>置顶</li>
+              <li>删除</li>
+            </ul>
+          </div>
         </li>
         <li class="dude"></li>
         <li class="dude"></li>
@@ -43,14 +48,28 @@ export default {
   data() {
     return {
       navName: "小本子",
-      showMask:false
+      showOption: false,
+      arr: ["创建日期", "快乐程度"],
+      arrangement: "",
+      index: 0,
     };
   },
   methods: {
-    clickOption(){
-      this.showMask = !this.showMask
-      console.log(this.showMask);
-    }
+    clickOption() {
+      this.showOption = !this.showOption;
+      console.log(this.showOption);
+    },
+    clickBtnDown() {
+      if (this.index < 1) {
+        this.index++;
+      } else {
+        this.index = 0;
+      }
+      this.arrangement = this.arr[this.index];
+    },
+  },
+  created() {
+    this.arrangement = "创建日期";
   },
 };
 </script>
@@ -67,7 +86,7 @@ export default {
 p {
   font-family: PingFang HK;
 }
-a{
+a {
   font-family: PingFang HK;
 }
 .card {
@@ -151,14 +170,13 @@ a{
     }
   }
   .dudeWrapper {
-    border: 1px solid red;
     width: 346px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     .dude {
-      background-color:rgba(67, 120, 219, 0.16);
+      background-color: rgba(67, 120, 219, 0.16);
       position: relative;
       width: 165px;
       height: 125px;
@@ -204,7 +222,7 @@ a{
         font-weight: 400;
         color: #4378db;
       }
-      .mask{
+      .option {
         position: absolute;
         left: 16px;
         top: 13px;
@@ -212,6 +230,17 @@ a{
         height: 101.5px;
         background: rgba(81, 81, 81, 0.9);
         border-radius: 4.35px;
+        li {
+          width: 100%;
+          height: 49px;
+          font-size: 18px;
+          color: #ffffff;
+          text-align: center;
+          line-height: 49px;
+        }
+        li:nth-child(1) {
+          border-bottom: 2px solid rgba(0, 0, 0, 0.5);
+        }
       }
     }
   }
