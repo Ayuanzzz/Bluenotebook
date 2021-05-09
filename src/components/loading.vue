@@ -23,7 +23,7 @@ export default {};
   align-items: center;
   background-color: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(8px);
-  // z-index: 1000;
+  z-index: 1000;
 }
 @keyframes pulse {
   from {
@@ -40,7 +40,7 @@ export default {};
   display: flex;
   justify-content: space-between;
   align-items: center;
-  // z-index: 2000;
+  z-index: 2000;
 }
 
 .pulse-bubble {
@@ -48,7 +48,8 @@ export default {};
   height: 20px;
   border-radius: 50%;
   background-color: #4378db;
-  .pulse-bubble-1 {
+}
+.pulse-bubble-1 {
     animation: pulse 0.4s ease 0s infinite alternate;
   }
   .pulse-bubble-2 {
@@ -57,5 +58,4 @@ export default {};
   .pulse-bubble-3 {
     animation: pulse 0.4s ease 0.4s infinite alternate;
   }
-}
 </style>

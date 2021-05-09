@@ -1,8 +1,9 @@
 <template>
   <div class="container">
+    <loading v-if="btnLoading"></loading>
     <navBar :name="navName"></navBar>
     <div class="card">
-      <span class="btnRight" id="icon"></span>
+      <span class="btnRight" id="icon" @click="loader()"></span>
       <div class="cardPerson">
         <img src="/static/images/bigicon/iconfinder__deer_.png" alt="" />
       </div>
@@ -25,7 +26,7 @@
           <span class="btnOption" id="icon" @click="clickOption()"></span>
           <a href="#" class="name">蛙蛙</a>
           <p class="time">起始日:2020.08.11</p>
-          <div class="option" v-if="showOption">
+          <div class="option" v-show="showOption">
             <ul>
               <li>置顶</li>
               <li>删除</li>
@@ -41,9 +42,11 @@
 
 <script>
 import navBar from "@/components/navBar";
+import loading from "@/components/loading"
 export default {
   components: {
     navBar,
+    loading
   },
   data() {
     return {
@@ -52,6 +55,7 @@ export default {
       arr: ["创建日期", "快乐程度"],
       arrangement: "",
       index: 0,
+      btnLoading:false
     };
   },
   methods: {
@@ -67,6 +71,9 @@ export default {
       }
       this.arrangement = this.arr[this.index];
     },
+    loader(){
+      this.btnLoading = true;
+    }
   },
   created() {
     this.arrangement = "创建日期";

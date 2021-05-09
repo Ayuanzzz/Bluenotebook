@@ -1,15 +1,17 @@
 <template>
-  <div class="container">
-    图表
+  <div>
+    <loading></loading>
   </div>
 </template>
 
 <script>
+import loading from "@/components/loading";
 export default {
-
-}
+  components: {
+    loading,
+  },
+};
 </script>
 
-<style lang='scss'>
-
+<style>
 </style>
