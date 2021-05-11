@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/index/main",
     "pages/dude/main",
     "pages/chart/main",
     "pages/create/main",

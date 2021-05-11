@@ -25,11 +25,11 @@ export default {
   data() {
     return {
       Avatar: "",
-      navHeight: "88px",
-      imgHeight: "35px",
-      imgTop: "44px",
-      imgLeft: "26px",
-      // textTop: this.globalData.textTop,
+      navHeight: this.globalData.navHeight,
+      imgHeight: this.globalData.imgHeight,
+      imgTop: this.globalData.imgTop,
+      imgLeft: this.globalData.imgLeft,
+      textTop: this.globalData.textTop,
     };
   },
   methods: {
@@ -51,16 +51,13 @@ export default {
 
 <style lang='scss'>
 .navBar {
-  border: 1px solid red;
   width: 100%;
   background-color: #f2f5f8;
   img {
-    border:1px solid pink;
     position: absolute;
     border-radius: 50%;
   }
   div {
-    border: 1px solid blue;
     position: absolute;
     width: 100%;
     text-align: center;

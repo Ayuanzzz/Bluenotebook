@@ -42,11 +42,11 @@
 
 <script>
 import navBar from "@/components/navBar";
-import loading from "@/components/loading"
+import loading from "@/components/loading";
 export default {
   components: {
     navBar,
-    loading
+    loading,
   },
   data() {
     return {
@@ -55,7 +55,14 @@ export default {
       arr: ["创建日期", "快乐程度"],
       arrangement: "",
       index: 0,
-      btnLoading:false
+      btnLoading: false,
+      startDays: "",
+      screenHeight: "",
+      dudeHeight: "",
+      navHeight: "",
+      cardTop: "",
+      dudeListMaxHeight: "",
+      scale: "",
     };
   },
   methods: {
@@ -71,12 +78,50 @@ export default {
       }
       this.arrangement = this.arr[this.index];
     },
-    loader(){
+    loader() {
       this.btnLoading = true;
-    }
+    },
+    //时间格式化
+    timeformat() {
+      // const that = this;
+      var util = require("../../utils/index.js");
+      this.startDays = util.formatTime(new Date());
+    },
+    //获取导航栏参数
+    getNav() {
+      let that = this;
+      //获取按钮信息
+      const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
+      //获取用户手机信息
+      const systemInfo = wx.getSystemInfoSync();
+      that.globalData.screenHeight = systemInfo.screenHeight;
+      that.scale = systemInfo.screenWidth / 375;
+      that.navHeight =
+        (menuButtonInfo.top - systemInfo.statusBarHeight) * 2 +
+        menuButtonInfo.height +
+        systemInfo.statusBarHeight;
+      that.globalData.navHeight = that.navHeight + "px";
+      that.globalData.barHeight =
+        systemInfo.screenHeight - that.navHeight + "px";
+      //缩放比例
+      that.cardTop = that.navHeight + that.scale * 29 + "px";
+      that.dudeHeight =
+        systemInfo.screenHeight - that.navHeight - that.scale * 222 + "px";
+      that.dudeListMaxHeight =
+        systemInfo.screenHeight -
+        that.navHeight -
+        that.scale * 222 -
+        that.scale * 104 +
+        "px";
+      that.globalData.imgHeight = menuButtonInfo.height + "px";
+      that.globalData.imgTop = menuButtonInfo.top + "px";
+      that.globalData.imgLeft =
+        systemInfo.screenWidth - menuButtonInfo.right + "px";
+    },
   },
   created() {
     this.arrangement = "创建日期";
+    this.getNav();
   },
 };
 </script>
