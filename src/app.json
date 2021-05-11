@@ -1,14 +1,34 @@
 {
   "pages": [
     "pages/index/main",
-    "pages/me/main",
-    "pages/chart/main",
     "pages/dude/main",
-    "pages/loginone/main",
-    "pages/logintwo/main"
+    "pages/chart/main",
+    "pages/create/main",
+    "pages/author/main"
   ],
   "window": {
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "selectedColor":  "#4378DB",
+    "list": [{
+      "text": "首页",
+      "pagePath": "pages/dude/main",
+      "iconPath": "static/images/home.png",
+      "selectedIconPath": "static/images/home-active.png"
+    },
+    {
+      "text": "统计",
+      "pagePath": "pages/chart/main",
+      "iconPath": "static/images/statistics.png",
+      "selectedIconPath": "static/images/statistics-active.png"
+    },
+    {
+      "text": "作者",
+      "pagePath": "pages/author/main",
+      "iconPath": "static/images/author.png",
+      "selectedIconPath": "static/images/author-active.png"
+    }]
   }
 }

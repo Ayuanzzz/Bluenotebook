@@ -49,30 +49,28 @@ export default {
 };
 </script>
 
-<style>
+<style lang='scss'>
 .navBar {
-  display: flex;
-  justify-content: center;
-  background-color: #f2f5f8;
-}
-.navBar img {
-  position: absolute;
-  border-radius: 50%;
-}
-.navBar div {
-  position: absolute;
-  display: flex;
-  align-content: center;
-  text-align: center;
-}
-.navBar div p {
-  font-family: PingFang SC;
-}
-.navBar hr {
-  height: 1px;
   width: 100%;
-  position: absolute;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.22);
+  background-color: #f2f5f8;
+  img {
+    position: absolute;
+    border-radius: 50%;
+  }
+  div {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    p {
+      font-family: PingFang SC;
+    }
+  }
+  hr {
+    height: 1px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.22);
+  }
 }
 </style>
