@@ -1,6 +1,13 @@
 <template>
   <div>
-    <button type="primary" @click="onGotUserInfo()">login</button>
+       <button
+      class="btn"
+      open-type="getUserInfo"
+      lang="zh_CN"
+      @getuserinfo="onGotUserInfo"
+    >
+      体验一下
+    </button>
   </div>
 </template>
 
@@ -8,18 +15,18 @@
 export default {
   methods: {
     //登录
-    onGotUserInfo: function () {
+    onGotUserInfo: function (e) {
       const that = this;
       wx.cloud.callFunction({
         name: "login",
         success: (res) => {
           that.openId = res.result.openid;
-          that.userInfo = res.target.userInfo;
+          that.userInfo = e.target.userInfo;
           that.userInfo.openId = that.openId;
           wx.setStorageSync("ui", that.userInfo);
-          // wx.navigateTo({
-          //   url: "/pages/me/main",
-          // });
+          wx.switchTab({
+            url: "/pages/dude/main",
+          });
           console.log("云函数调用成功");
           console.log(that.userInfo);
         },

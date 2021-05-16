@@ -5,10 +5,10 @@
     <div class="card">
       <span class="btnRight" id="icon" @click="loader()"></span>
       <div class="cardPerson">
-        <img src="/static/images/bigicon/iconfinder__deer_.png" alt="" />
+        <img :src="itemImg_path2+top.image" alt="" />
       </div>
-      <p>clue</p>
-      <p>30天 | 已结束</p>
+      <p>{{top.name}}</p>
+      <p>{{top.days}}</p>
     </div>
 
     <div class="dudeList">
@@ -19,13 +19,14 @@
         <p>添加</p>
       </div>
       <ul class="dudeWrapper">
-        <li class="dude">
+        <li id="dude" :class="item.class" v-for="(item, index) in dudeInfo"
+          :key="index">
           <div class="profile">
-            <img src="/static/images/bigicon/iconfinder__deer_.png" alt="" />
+            <img :src="itemImg_path1+item.profile" />
           </div>
           <span class="btnOption" id="icon" @click="clickOption()"></span>
-          <a href="#" class="name">蛙蛙</a>
-          <p class="time">起始日:2020.08.11</p>
+          <a href="#" class="name">{{item.name}}</a>
+          <p class="time">起始日:{{item.startDays}}</p>
           <div class="option" v-show="showOption">
             <ul>
               <li>置顶</li>
@@ -33,8 +34,6 @@
             </ul>
           </div>
         </li>
-        <li class="dude"></li>
-        <li class="dude"></li>
       </ul>
     </div>
   </div>
@@ -56,13 +55,20 @@ export default {
       arrangement: "",
       index: 0,
       btnLoading: false,
-      startDays: "",
       screenHeight: "",
       dudeHeight: "",
       navHeight: "",
       cardTop: "",
       dudeListMaxHeight: "",
       scale: "",
+      dudeInfo: [],
+      itemImg_path1:"/static/images/smallicon/",
+      itemImg_path2:"/static/images/bigicon/",
+      top: {
+        image: "",
+        name: "",
+        days: "",
+      },
     };
   },
   methods: {
@@ -118,10 +124,51 @@ export default {
       that.globalData.imgLeft =
         systemInfo.screenWidth - menuButtonInfo.right + "px";
     },
+    //获取小伙伴数据
+    getData() {
+      const that = this;
+      that.ui = wx.getStorageSync("ui");
+      wx.cloud
+        .callFunction({
+          name: "finddude",
+          data: {
+            openId: that.ui.openId,
+          },
+        })
+        .then((res) => {
+          that.dudeInfo = res.result.data;
+          for(let i=0;i<that.dudeInfo.length;i++){
+            that.dudeInfo[i].class="dudeStyle-"+(i+1)%4
+          }
+          console.log(that.dudeInfo);
+          if (that.dudeInfo[0]) {
+            that.mergeImg();
+          } else {
+            that.toDude();
+          }
+        })
+        .catch((err) => {
+          console.log("读取数据库失败", err);
+        });
+    },
+    // 预处理头部卡片信息
+    mergeImg() {
+      this.top.image = this.dudeInfo[0].profile;
+      this.top.name = this.dudeInfo[0].name;
+      let time = new Date();
+      let now = time.getTime();
+      let old = this.dudeInfo[0].startTime;
+      let onceDays = this.dudeInfo[0].allSeconds;
+      this.allSeconds = now - old + onceDays;
+      this.top.days = Math.ceil(this.allSeconds / 86400000) + "天 | "+this.dudeInfo[0].status;
+    },
   },
   created() {
     this.arrangement = "创建日期";
     this.getNav();
+  },
+  onShow() {
+    this.getData();
   },
 };
 </script>
@@ -227,8 +274,7 @@ a {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    .dude {
-      background-color: rgba(67, 120, 219, 0.16);
+    #dude {
       position: relative;
       width: 165px;
       height: 125px;
@@ -240,8 +286,8 @@ a {
         height: 35px;
         left: 20px;
         top: 19px;
-        border-radius: 50%;
         background-color: #ffffff;
+        border-radius: 50%;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -256,7 +302,6 @@ a {
         left: 125px;
         width: 24px;
         height: 24px;
-        background: no-repeat -34px -216.96px;
       }
       .name {
         position: absolute;
@@ -264,7 +309,6 @@ a {
         top: 64px;
         font-size: 16px;
         font-weight: 600;
-        color: #405db5;
       }
       .time {
         position: absolute;
@@ -272,7 +316,6 @@ a {
         top: 92px;
         font-size: 16px;
         font-weight: 400;
-        color: #4378db;
       }
       .option {
         position: absolute;
@@ -293,6 +336,54 @@ a {
         li:nth-child(1) {
           border-bottom: 2px solid rgba(0, 0, 0, 0.5);
         }
+      }
+    }
+    .dudeStyle-1 {
+      background-color: rgba(67, 120, 219, 0.16);
+      .btnOption {
+        background: no-repeat -34px -216.96px;
+      }
+      .name {
+        color: #405db5;
+      }
+      .time {
+        color: #4378db;
+      }
+    }
+    .dudeStyle-2 {
+      background-color: rgba(240, 167, 20, 0.16);
+      .btnOption {
+        background: no-repeat -34px -276.96px;
+      }
+      .name {
+        color: rgba(240, 167, 20, 1);
+      }
+      .time {
+        color: rgba(240, 167, 20, 1);
+      }
+    }
+    .dudeStyle-3 {
+      background-color: rgba(243, 85, 85, 0.16);
+      .btnOption {
+        background: no-repeat -34px -336.96px;
+      }
+      .name {
+        color: rgba(171, 63, 63, 1);
+      }
+      .time {
+        color: rgba(243, 85, 85, 1);
+      }
+    }
+    .dudeStyle-0 {
+      background-color: rgba(40, 161, 100, 0.16);
+      .btnOption {
+        background: no-repeat -34px -396.96px;
+      }
+      .name {
+        color: rgba(34, 137, 85, 1);
+      }
+      .time {
+        color: rgba(40, 161, 100, 1);
       }
     }
   }

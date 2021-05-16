@@ -10,7 +10,7 @@ export default {
         });
       } else {
         wx.navigateTo({
-          url: "/pages/me/main",
+          url: "/pages/create/main",
         });
       }
     },

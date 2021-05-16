@@ -1,9 +1,9 @@
 {
   "pages": [
-    "pages/index/main",
-    "pages/dude/main",
-    "pages/chart/main",
     "pages/create/main",
+    "pages/dude/main",
+    "pages/index/main",
+    "pages/chart/main",
     "pages/author/main"
   ],
   "window": {
