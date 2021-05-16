@@ -3,10 +3,10 @@
     <navBar :name="navName"></navBar>
     <div class="profile">
       <p>选择头像</p>
-      <swiper class="swiper" indicator-dots="true" circular="true">
-        <block v-for="(item, index) in movies" :key="index">
+      <swiper class="swiper" indicator-dots="true" circular="true" @change="switchItem('switchItem',$event)" >
+        <block v-for="(item, index) in profile" :key="index">
           <swiper-item>
-            <image :src="item" class="slide-image" mode="aspectFill" />
+            <image :src="itemImg_path + item" />
           </swiper-item>
         </block>
       </swiper>
@@ -38,25 +38,33 @@ export default {
   },
   data() {
     return {
-      movies: [
-        "/static/images/bigicon/iconfinder__deer_.png",
-        "/static/images/bigicon/iconfinder_bug--animal-pet-wild-domestic_.png",
-        "/static/images/bigicon/iconfinder_Food_C_.png",
-        "/static/images/bigicon/iconfinder_frog-animal-pet-wild-domestic_.png",
-        "/static/images/bigicon/iconfinder_icon_animal_cachorro_.png",
-        "/static/images/bigicon/iconfinder_icon_animal_pato_.png",
-        "/static/images/bigicon/iconfinder_Inkcontober_Screech_Psyduck_.png",
-        "/static/images/bigicon/iconfinder_octopus-sea--animal-pet-wild-domestic_.png",
-        "/static/images/bigicon/iconfinder_parrot-bird--animal-pet-wild-domestic_.png",
-        "/static/images/bigicon/iconfinder_pig-animal-pet-wild-domestic_.png",
-        "/static/images/bigicon/iconfinder_pinguin-animal-pet-wild-domestic_.png",
-        "/static/images/bigicon/iconfinder_sheep-animal-pet-wild-domestic_.png",
+      itemImg_path: "/static/images/bigicon/",
+      profile: [
+        "iconfinder__deer_.png",
+        "iconfinder_bug--animal-pet-wild-domestic_.png",
+        "iconfinder_Food_C_.png",
+        "iconfinder_frog-animal-pet-wild-domestic_.png",
+        "iconfinder_icon_animal_cachorro_.png",
+        "iconfinder_icon_animal_pato_.png",
+        "iconfinder_Inkcontober_Screech_Psyduck_.png",
+        "iconfinder_octopus-sea--animal-pet-wild-domestic_.png",
+        "iconfinder_parrot-bird--animal-pet-wild-domestic_.png",
+        "iconfinder_pig-animal-pet-wild-domestic_.png",
+        "iconfinder_pinguin-animal-pet-wild-domestic_.png",
+        "iconfinder_sheep-animal-pet-wild-domestic_.png",
       ],
+      temp:""
     };
   },
   methods: {
     formSubmit(e) {
       console.log("form发生了submit事件，携带数据为：", e);
+    },
+    switchItem: function (prompt,res) {
+      console.log(res);
+      let count = res.mp.detail.current;
+      this.temp = this.profile[count];
+      console.log(this.temp);
     },
   },
   created() {},
