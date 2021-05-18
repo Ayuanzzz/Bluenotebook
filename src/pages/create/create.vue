@@ -1,10 +1,15 @@
 <template>
   <div class="container">
     <navBar :name="navName"></navBar>
-    <div class="profile">
+    <div class="avatar">
       <p>选择头像</p>
-      <swiper class="swiper" indicator-dots="true" circular="true" @change="switchItem('switchItem',$event)" >
-        <block v-for="(item, index) in profile" :key="index">
+      <swiper
+        class="swiper"
+        indicator-dots="true"
+        circular="true"
+        @change="switchItem('switchItem', $event)"
+      >
+        <block v-for="(item, index) in avatar" :key="index">
           <swiper-item>
             <image :src="itemImg_path + item" />
           </swiper-item>
@@ -13,15 +18,10 @@
     </div>
     <div class="nickName">
       <p>昵称</p>
-      <form catchsubmit="formSubmit" catchreset="formReset">
-        <input
-          class="weui-input"
-          name="input"
-          placeholder="最多输入6个字哦"
-          maxlength="6"
-        />
+      <form  @submit="fromSubmit" report-submit="true">
+        <input name="input" auto-focus type="text" placeholder="最多输入6个字哦" maxlength="6" />
         <div class="btn-area">
-          <button type="primary" formType="submit" @click="formSubmit(e)">
+          <button formType="submit" type="primary">
             创建
           </button>
         </div>
@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       itemImg_path: "/static/images/bigicon/",
-      profile: [
+      avatar: [
         "iconfinder__deer_.png",
         "iconfinder_bug--animal-pet-wild-domestic_.png",
         "iconfinder_Food_C_.png",
@@ -53,21 +53,63 @@ export default {
         "iconfinder_pinguin-animal-pet-wild-domestic_.png",
         "iconfinder_sheep-animal-pet-wild-domestic_.png",
       ],
-      temp:""
+      avatarPicked: "",
+      openId:"",
+      userName:"",
+      dudeName:"",
     };
   },
   methods: {
-    formSubmit(e) {
+    fromSubmit(e){
       console.log("form发生了submit事件，携带数据为：", e);
+      console.log(e.target.value.input);
+      this.dudeName = e.target.value.input
+      this.adddude();
     },
-    switchItem: function (prompt,res) {
-      console.log(res);
+    switchItem: function (prompt, res) {
       let count = res.mp.detail.current;
-      this.temp = this.profile[count];
-      console.log(this.temp);
+      this.avatarPicked = this.avatar[count];
+    },
+    //时间格式化
+    timeformat() {
+      const that = this;
+      var util = require("../../utils/index.js");
+      that.startDays = util.formatTime(new Date());
+    },
+    //创建小伙伴
+    adddude() {
+      const that = this;
+      let time = new Date();
+      that.startTime = time.getTime();
+      that.timeformat();
+      console.log(that.startDays);
+      wx.cloud
+        .callFunction({
+          name: "adddude",
+          data: {
+            openId: that.openId,
+            userName:that.userName,
+            dudeName: that.dudeName,
+            status: "doing",
+            startTime: that.startTime,
+            startDays: that.startDays,
+            allSeconds: 0,
+            love: 0,
+            hate: 0,
+          },
+        })
+        .then((res) => {
+          console.log("写入数据库成功");
+        })
+        .catch((err) => {
+          console.log("写入数据库失败", err);
+        });
     },
   },
-  created() {},
+  onLoad() {
+    this.openId = wx.getStorageSync("ui").openId;
+    this.userName = wx.getStorageSync("ui").nickName;
+  },
 };
 </script>
 
@@ -82,7 +124,7 @@ p {
   font-weight: bold;
   color: #4378db;
 }
-.profile {
+.avatar {
   position: relative;
   width: 100%;
   height: 300px;
