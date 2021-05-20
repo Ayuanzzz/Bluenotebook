@@ -18,12 +18,16 @@
     </div>
     <div class="nickName">
       <p>昵称</p>
-      <form  @submit="fromSubmit" report-submit="true">
-        <input name="input" auto-focus type="text" placeholder="最多输入6个字哦" maxlength="6" />
+      <form @submit="fromSubmit" report-submit="true">
+        <input
+          name="input"
+          auto-focus
+          type="text"
+          placeholder="最多输入6个字哦"
+          maxlength="6"
+        />
         <div class="btn-area">
-          <button formType="submit" type="primary">
-            创建
-          </button>
+          <button formType="submit" type="primary">创建</button>
         </div>
       </form>
     </div>
@@ -53,22 +57,22 @@ export default {
         "iconfinder_pinguin-animal-pet-wild-domestic_.png",
         "iconfinder_sheep-animal-pet-wild-domestic_.png",
       ],
-      avatarPicked: "",
-      openId:"",
-      userName:"",
-      dudeName:"",
+      openId: "",
+      userName: "",
+      dudeName: "",
+      dudeImg:"iconfinder__deer_.png",
     };
   },
   methods: {
-    fromSubmit(e){
+    fromSubmit(e) {
       console.log("form发生了submit事件，携带数据为：", e);
       console.log(e.target.value.input);
-      this.dudeName = e.target.value.input
+      this.dudeName = e.target.value.input;
       this.adddude();
     },
     switchItem: function (prompt, res) {
       let count = res.mp.detail.current;
-      this.avatarPicked = this.avatar[count];
+      this.dudeImg = this.avatar[count];
     },
     //时间格式化
     timeformat() {
@@ -88,8 +92,9 @@ export default {
           name: "adddude",
           data: {
             openId: that.openId,
-            userName:that.userName,
+            userName: that.userName,
             dudeName: that.dudeName,
+            dudeImg: that.dudeImg,
             status: "doing",
             startTime: that.startTime,
             startDays: that.startDays,

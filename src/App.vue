@@ -9,8 +9,8 @@ export default {
           url: "/pages/index/main",
         });
       } else {
-        wx.navigateTo({
-          url: "/pages/create/main",
+        wx.switchTab({
+          url: "/pages/dude/main",
         });
       }
     },

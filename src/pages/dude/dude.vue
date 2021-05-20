@@ -22,10 +22,10 @@
         <li id="dude" :class="item.class" v-for="(item, index) in dudeInfo"
           :key="index">
           <div class="profile">
-            <img :src="itemImg_path1+item.profile" />
+            <img :src="itemImg_path1+item.dudeImg" />
           </div>
           <span class="btnOption" id="icon" @click="clickOption()"></span>
-          <a href="#" class="name">{{item.name}}</a>
+          <a href="#" class="name">{{item.dudeName}}</a>
           <p class="time">起始日:{{item.startDays}}</p>
           <div class="option" v-show="showOption">
             <ul>
