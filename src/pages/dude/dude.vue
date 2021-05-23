@@ -5,32 +5,36 @@
     <div class="card">
       <span class="btnRight" id="icon" @click="loader()"></span>
       <div class="cardPerson">
-        <img :src="itemImg_path2+top.image" alt="" />
+        <img :src="itemImg_path2 + top.image" alt="" />
       </div>
-      <p>{{top.name}}</p>
-      <p>{{top.days}}</p>
+      <p>{{ top.name }}</p>
+      <p>{{ top.days }}</p>
     </div>
 
     <div class="dudeList">
       <div class="title">
         <p>按{{ arrangement }}排序</p>
         <span class="btnDown" id="icon" @click="clickBtnDown()"></span>
-        <span class="btnAdd" id="icon"></span>
-        <p>添加</p>
+        <span class="btnAdd" id="icon" @click="toCreate()"></span>
+        <p @click="toCreate()">添加</p>
       </div>
       <ul class="dudeWrapper">
-        <li id="dude" :class="item.class" v-for="(item, index) in dudeInfo"
-          :key="index">
+        <li
+          id="dude"
+          :class="item.class"
+          v-for="(item, index) in dudeInfo"
+          :key="index"
+        >
           <div class="profile">
-            <img :src="itemImg_path1+item.dudeImg" />
+            <img :src="itemImg_path1 + item.dudeImg" />
           </div>
-          <span class="btnOption" id="icon" @click="clickOption()"></span>
-          <a href="#" class="name">{{item.dudeName}}</a>
-          <p class="time">起始日:{{item.startDays}}</p>
-          <div class="option" v-show="showOption">
+          <span class="btnOption" id="icon" @click="clickOption(index)"></span>
+          <a href="#" class="name">{{ item.dudeName }}</a>
+          <p class="time">起始日:{{ item.startDays }}</p>
+          <div class="option" v-show="dudeInfo[index].showOption">
             <ul>
-              <li>置顶</li>
-              <li>删除</li>
+              <li @click="toTop(index)">置顶</li>
+              <li @click="deleteDude(index)">删除</li>
             </ul>
           </div>
         </li>
@@ -50,7 +54,6 @@ export default {
   data() {
     return {
       navName: "小本子",
-      showOption: false,
       arr: ["创建日期", "快乐程度"],
       arrangement: "",
       index: 0,
@@ -62,19 +65,21 @@ export default {
       dudeListMaxHeight: "",
       scale: "",
       dudeInfo: [],
-      itemImg_path1:"/static/images/smallicon/",
-      itemImg_path2:"/static/images/bigicon/",
+      topInfo:[],
+      itemImg_path1: "/static/images/smallicon/",
+      itemImg_path2: "/static/images/bigicon/",
       top: {
         image: "",
         name: "",
         days: "",
       },
+      showOption: false,
     };
   },
   methods: {
-    clickOption() {
+    clickOption(index) {
       this.showOption = !this.showOption;
-      console.log(this.showOption);
+      this.dudeInfo[index].showOption = this.showOption;
     },
     clickBtnDown() {
       if (this.index < 1) {
@@ -130,22 +135,39 @@ export default {
       that.ui = wx.getStorageSync("ui");
       wx.cloud
         .callFunction({
-          name: "finddude",
+          name: "getalldude",
           data: {
             openId: that.ui.openId,
           },
         })
         .then((res) => {
           that.dudeInfo = res.result.data;
-          for(let i=0;i<that.dudeInfo.length;i++){
-            that.dudeInfo[i].class="dudeStyle-"+(i+1)%4
+          for (let i = 0; i < that.dudeInfo.length; i++) {
+            that.dudeInfo[i].class = "dudeStyle-" + ((i + 1) % 4);
+            // 设置每个按钮的状态
+            that.dudeInfo[i].showOption = false;
           }
-          console.log(that.dudeInfo);
-          if (that.dudeInfo[0]) {
-            that.mergeImg();
-          } else {
-            that.toDude();
-          }
+          if (!that.dudeInfo[0]) {
+            that.toCreate();
+          } 
+        })
+        .catch((err) => {
+          console.log("读取数据库失败", err);
+        });
+    },
+    //获取置顶小伙伴数据
+    getTopData() {
+      const that = this;
+      wx.cloud
+        .callFunction({
+          name: "gettopdude",
+          data: {
+            openId: that.ui.openId,
+          },
+        })
+        .then((res) => {
+          that.topInfo = res.result.data;
+          that.mergeImg();
         })
         .catch((err) => {
           console.log("读取数据库失败", err);
@@ -153,14 +175,76 @@ export default {
     },
     // 预处理头部卡片信息
     mergeImg() {
-      this.top.image = this.dudeInfo[0].profile;
-      this.top.name = this.dudeInfo[0].name;
+      console.log(this.topInfo[0]);
+      this.top.image = this.topInfo[0].dudeImg;
+      this.top.name = this.topInfo[0].dudeName;
       let time = new Date();
       let now = time.getTime();
-      let old = this.dudeInfo[0].startTime;
-      let onceDays = this.dudeInfo[0].allSeconds;
+      let old = this.topInfo[0].startTime;
+      let onceDays = this.topInfo[0].allSeconds;
       this.allSeconds = now - old + onceDays;
-      this.top.days = Math.ceil(this.allSeconds / 86400000) + "天 | "+this.dudeInfo[0].status;
+      this.top.days =
+        Math.ceil(this.allSeconds / 86400000) +
+        "天 | " +
+        this.topInfo[0].status;
+    },
+    //置顶
+    toTop(index) {
+      let time = new Date();
+      let now = time.getTime();
+      const that = this;
+      that.dudeInfo[index].showOption = false;
+      console.log(that.dudeInfo[index]._id);
+      console.log(now);
+      wx.cloud
+        .callFunction({
+          name: "updatetop",
+          data: {
+            openId: that.ui.openId,
+            id: that.dudeInfo[index]._id,
+            top: now,
+          },
+        })
+        .then((res) => {
+          that.getTopData();
+          console.log("done");
+        })
+        .catch((err) => {
+          console.log("fail");
+        });
+    },
+    //删除
+    deleteDude(index) {
+      const that = this;
+      that.dudeInfo[index].showOption = false;
+      wx.cloud
+        .callFunction({
+          name: "removedude",
+          data: {
+            openId: that.ui.openId,
+            id: that.dudeInfo[index]._id,
+          },
+        })
+        .then((res) => {
+          that.getData();
+          console.log("done");
+        })
+        .catch((err) => {
+          console.log("fail");
+        });
+    },
+    //跳转至创建伙伴界面
+    toCreate() {
+      let url = "/pages/create/main";
+      if (getCurrentPages().length >= 10) {
+        wx.redirectTo({
+          url,
+        });
+      } else {
+        wx.navigateTo({
+          url,
+        });
+      }
     },
   },
   created() {
@@ -169,6 +253,7 @@ export default {
   },
   onShow() {
     this.getData();
+    this.getTopData();
   },
 };
 </script>

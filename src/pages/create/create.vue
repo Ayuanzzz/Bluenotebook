@@ -105,10 +105,24 @@ export default {
         })
         .then((res) => {
           console.log("写入数据库成功");
+          this.navToHome();
         })
         .catch((err) => {
           console.log("写入数据库失败", err);
         });
+    },
+    //返回首页
+    navToHome() {
+      let url = "/pages/dude/main";
+      if (getCurrentPages().length >= 10) {
+        wx.redirectTo({
+          url,
+        });
+      } else {
+        wx.switchTab({
+          url,
+        });
+      }
     },
   },
   onLoad() {
