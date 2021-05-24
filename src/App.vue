@@ -10,7 +10,7 @@ export default {
         });
       } else {
         wx.switchTab({
-          url: "/pages/dude/main",
+          url: "/pages/chart/main",
         });
       }
     },

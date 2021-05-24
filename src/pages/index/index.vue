@@ -25,7 +25,7 @@ export default {
           that.userInfo.openId = that.openId;
           wx.setStorageSync("ui", that.userInfo);
           wx.switchTab({
-            url: "/pages/dude/main",
+            url: "/pages/index/main",
           });
           console.log("云函数调用成功");
           console.log(that.userInfo);
