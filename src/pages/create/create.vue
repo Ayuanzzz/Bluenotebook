@@ -60,7 +60,7 @@ export default {
       openId: "",
       userName: "",
       dudeName: "",
-      dudeImg:"iconfinder__deer_.png",
+      dudeImg: "iconfinder__deer_.png",
     };
   },
   methods: {
@@ -95,9 +95,10 @@ export default {
             userName: that.userName,
             dudeName: that.dudeName,
             dudeImg: that.dudeImg,
-            status: "doing",
+            status: "进行中",
             startTime: that.startTime,
             startDays: that.startDays,
+            orderTime: that.startTime,
             allSeconds: 0,
             love: 0,
             hate: 0,
