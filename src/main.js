@@ -16,6 +16,7 @@ app.$mount()
 getApp().globalData = {
   barHeight:'',
   navHeight :'',
+  navMargin:'',
   imgHeight:'',
   imgTop:'',
   imgLeft:'',

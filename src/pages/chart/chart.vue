@@ -2,7 +2,7 @@
   <div class="container">
     <navBar :name="name"></navBar>
     <div class="bar" >
-      <div class="wrap">
+      <div class="wrap" :style={marginTop:wrapMarginTop}>
         <!-- 时间开关 -->
         <div class="time">
           <p>{{ days }}</p>
@@ -57,6 +57,7 @@ export default {
       sadPer:"",
       echarts,
       option:{},
+      wrapMarginTop:""
     };
   },
   methods: {
@@ -267,10 +268,7 @@ export default {
     },
   },
   created() {
-    this.barHeight = this.globalData.barHeight
-    console.log(this.barHeight);
-    let a = wx.getSystemInfoSync().windowHeight
-    console.log(a);
+    this.wrapMarginTop = this.globalData.navMargin
     this.openId = wx.getStorageSync("ui").openId;
   },
   onShow() {
@@ -288,24 +286,21 @@ export default {
 }
 
 .bar {
-  border: 1px solid red;
   position: absolute;
+  top:0;
   width: 100%;
-  height: 600px;
-  // bottom: 0;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .wrap {
-  border: 1px solid blue;
   position: relative;
   width: 100%;
   height: 549px;
   display: flex;
   justify-content: center;
-  margin-bottom: 15px;
 }
 
 .time {

@@ -112,8 +112,12 @@ export default {
         menuButtonInfo.height +
         systemInfo.statusBarHeight;
       that.globalData.navHeight = that.navHeight + "px";
+      that.globalData.navMargin = that.navHeight + 2 + "px";
       that.globalData.barHeight =
-        systemInfo.screenHeight - that.navHeight + "px";
+        systemInfo.windowHeight - that.navHeight + "px";
+        console.log(systemInfo);
+      console.log(systemInfo.windowHeight+"w");
+      console.log(systemInfo.screenHeight+"s");
       //缩放比例
       that.cardTop = that.navHeight + that.scale * 29 + "px";
       that.dudeHeight =
