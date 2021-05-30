@@ -118,7 +118,7 @@ export default {
       that.globalData.barHeight = that.barHeight;
       //缩放比例
       that.cardTop = that.navHeight + that.scale * 29 + "px";
-      that.globalData.cardTop = that.cardTop
+      that.globalData.cardTop = that.cardTop;
       that.dudeHeight =
         systemInfo.screenHeight - that.navHeight - that.scale * 222 + "px";
       that.globalData.imgHeight = menuButtonInfo.height + "px";
@@ -209,12 +209,13 @@ export default {
     },
     //置顶
     toTop(index) {
-      let time = new Date();
-      let now = time.getTime();
       const that = this;
       that.dudeInfo[index].showOption = false;
+      let time = new Date();
+      let now = time.getTime();
+      that.topInfo[0] = that.dudeInfo[index];
+      that.mergeImg();
       that.globalData.id = that.dudeInfo[index]._id;
-      console.log(that.dudeInfo[index]._id);
       wx.cloud
         .callFunction({
           name: "updatetop",
@@ -225,7 +226,7 @@ export default {
           },
         })
         .then((res) => {
-          that.getTopData();
+          console.log("置顶成功");
         })
         .catch((err) => {
           console.log("置顶失败");
@@ -235,6 +236,13 @@ export default {
     deleteDude(index) {
       const that = this;
       that.dudeInfo[index].showOption = false;
+      if (that.topInfo[0]._id == that.dudeInfo[index]._id) {
+        that.dudeInfo.splice(index, 1);
+        let index = 0;
+        that.toTop(index);
+      } else {
+        that.dudeInfo.splice(index, 1);
+      }
       wx.cloud
         .callFunction({
           name: "removedude",
@@ -244,14 +252,10 @@ export default {
           },
         })
         .then((res) => {
-          if (that.topInfo[0]._id == that.dudeInfo[index]._id) {
-            that.getTopData();
-          }
-          that.getData();
           console.log("删除成功");
         })
         .catch((err) => {
-          console.log("fail");
+          console.log("删除失败");
         });
     },
     //跳转至创建伙伴界面
