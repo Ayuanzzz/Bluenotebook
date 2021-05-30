@@ -2,15 +2,14 @@
   <div class="container">
     <loading v-if="btnLoading"></loading>
     <navBar :name="navName"></navBar>
-    <div class="card">
-      <span class="btnRight" id="icon" @click="loader()"></span>
-      <div class="cardPerson">
+    <div class="card" :style="{ marginTop: cardTop }">
+      <span class="btnRight" id="icon" @click="toTopChart()"></span>
+      <div class="cardPerson" @click="toTopChart()">
         <img :src="itemImg_path2 + top.image" alt="" />
       </div>
-      <p>{{ top.name }}</p>
+      <p @click="toTopChart()">{{ top.name }}</p>
       <p>{{ top.days }}</p>
     </div>
-
     <div class="dudeList">
       <div class="title">
         <p>按{{ arrangement }}排序</p>
@@ -25,11 +24,13 @@
           v-for="(item, index) in dudeInfo"
           :key="index"
         >
-          <div class="profile">
+          <div class="profile" @click="toChart(index)">
             <img :src="itemImg_path1 + item.dudeImg" />
           </div>
           <span class="btnOption" id="icon" @click="clickOption(index)"></span>
-          <a href="#" class="name">{{ item.dudeName }}</a>
+          <a href="#" class="name" @click="toChart(index)">{{
+            item.dudeName
+          }}</a>
           <p class="time">起始日:{{ item.startDays }}</p>
           <div class="option" v-show="dudeInfo[index].showOption">
             <ul>
@@ -54,9 +55,8 @@ export default {
   data() {
     return {
       navName: "小本子",
-      arr: ["创建日期", "快乐程度"],
-      arrangement: "",
-      index: 0,
+      arrangement: "创建日期",
+      btnDown: true,
       btnLoading: false,
       screenHeight: "",
       dudeHeight: "",
@@ -65,7 +65,7 @@ export default {
       dudeListMaxHeight: "",
       scale: "",
       dudeInfo: [],
-      topInfo:[],
+      topInfo: [],
       itemImg_path1: "/static/images/smallicon/",
       itemImg_path2: "/static/images/bigicon/",
       top: {
@@ -82,12 +82,13 @@ export default {
       this.dudeInfo[index].showOption = this.showOption;
     },
     clickBtnDown() {
-      if (this.index < 1) {
-        this.index++;
+      this.btnDown = !this.btnDown;
+      this.arrangement = this.btnDown ? "创建日期" : "喜爱程度";
+      if (!this.btnDown) {
+        this.getDataByLove();
       } else {
-        this.index = 0;
+        this.getData();
       }
-      this.arrangement = this.arr[this.index];
     },
     loader() {
       this.btnLoading = true;
@@ -113,27 +114,19 @@ export default {
         systemInfo.statusBarHeight;
       that.globalData.navHeight = that.navHeight + "px";
       that.globalData.navMargin = that.navHeight + 2 + "px";
-      that.globalData.barHeight =
-        systemInfo.windowHeight - that.navHeight + "px";
-        console.log(systemInfo);
-      console.log(systemInfo.windowHeight+"w");
-      console.log(systemInfo.screenHeight+"s");
+      that.barHeight = systemInfo.windowHeight - that.navHeight + "px";
+      that.globalData.barHeight = that.barHeight;
       //缩放比例
       that.cardTop = that.navHeight + that.scale * 29 + "px";
+      that.globalData.cardTop = that.cardTop
       that.dudeHeight =
         systemInfo.screenHeight - that.navHeight - that.scale * 222 + "px";
-      that.dudeListMaxHeight =
-        systemInfo.screenHeight -
-        that.navHeight -
-        that.scale * 222 -
-        that.scale * 104 +
-        "px";
       that.globalData.imgHeight = menuButtonInfo.height + "px";
       that.globalData.imgTop = menuButtonInfo.top + "px";
       that.globalData.imgLeft =
         systemInfo.screenWidth - menuButtonInfo.right + "px";
     },
-    //获取小伙伴数据
+    //按创建时间获取小伙伴数据
     getData() {
       const that = this;
       that.ui = wx.getStorageSync("ui");
@@ -146,18 +139,41 @@ export default {
         })
         .then((res) => {
           that.dudeInfo = res.result.data;
-          for (let i = 0; i < that.dudeInfo.length; i++) {
-            that.dudeInfo[i].class = "dudeStyle-" + ((i + 1) % 4);
-            // 设置每个按钮的状态
-            that.dudeInfo[i].showOption = false;
-          }
-          if (!that.dudeInfo[0]) {
-            that.toCreate();
-          } 
+          that.mergeInfo();
         })
         .catch((err) => {
           console.log("读取数据库失败", err);
         });
+    },
+    //按喜爱程度获取小伙伴数据
+    getDataByLove() {
+      const that = this;
+      that.ui = wx.getStorageSync("ui");
+      wx.cloud
+        .callFunction({
+          name: "getbylove",
+          data: {
+            openId: that.ui.openId,
+          },
+        })
+        .then((res) => {
+          that.dudeInfo = res.result.data;
+          that.mergeInfo();
+        })
+        .catch((err) => {
+          console.log("读取数据库失败", err);
+        });
+    },
+    //处理小伙伴信息
+    mergeInfo() {
+      for (let i = 0; i < this.dudeInfo.length; i++) {
+        this.dudeInfo[i].class = "dudeStyle-" + ((i + 1) % 4);
+        // 设置每个按钮的状态
+        this.dudeInfo[i].showOption = false;
+      }
+      if (!this.dudeInfo[0]) {
+        this.toCreate();
+      }
     },
     //获取置顶小伙伴数据
     getTopData() {
@@ -179,7 +195,6 @@ export default {
     },
     // 预处理头部卡片信息
     mergeImg() {
-      console.log(this.topInfo[0]);
       this.top.image = this.topInfo[0].dudeImg;
       this.top.name = this.topInfo[0].dudeName;
       let time = new Date();
@@ -198,8 +213,8 @@ export default {
       let now = time.getTime();
       const that = this;
       that.dudeInfo[index].showOption = false;
+      that.globalData.id = that.dudeInfo[index]._id;
       console.log(that.dudeInfo[index]._id);
-      console.log(now);
       wx.cloud
         .callFunction({
           name: "updatetop",
@@ -211,10 +226,9 @@ export default {
         })
         .then((res) => {
           that.getTopData();
-          console.log("done");
         })
         .catch((err) => {
-          console.log("fail");
+          console.log("置顶失败");
         });
     },
     //删除
@@ -230,8 +244,11 @@ export default {
           },
         })
         .then((res) => {
+          if (that.topInfo[0]._id == that.dudeInfo[index]._id) {
+            that.getTopData();
+          }
           that.getData();
-          console.log("done");
+          console.log("删除成功");
         })
         .catch((err) => {
           console.log("fail");
@@ -250,9 +267,37 @@ export default {
         });
       }
     },
+    //跳转
+    navTo() {
+      let url = "/pages/chart/main";
+      if (getCurrentPages().length >= 10) {
+        wx.redirectTo({
+          url,
+        });
+      } else {
+        wx.switchTab({
+          url,
+        });
+      }
+    },
+    //跳转至小伙伴个人界面
+    toChart(index) {
+      let id = this.dudeInfo[index]._id;
+      this.globalData.id = id;
+      this.navTo();
+    },
+    //跳转至置顶小伙伴个人界面
+    toTopChart() {
+      this.globalData.id = this.topInfo[0]._id;
+      this.navTo();
+    },
   },
-  created() {
-    this.arrangement = "创建日期";
+  computed: {
+    watchName() {
+      console.log(this.top.name);
+    },
+  },
+  onLoad() {
     this.getNav();
   },
   onShow() {
@@ -265,6 +310,8 @@ export default {
 <style lang="scss">
 .container {
   width: 100%;
+  height: 100%;
+  overflow: scroll;
 }
 #icon {
   display: inline-block;
@@ -272,16 +319,16 @@ export default {
   background-size: 97px 493px;
 }
 p {
-  font-family: PingFang HK;
+  font-family: PingFang SC;
 }
 a {
-  font-family: PingFang HK;
+  font-family: PingFang SC;
 }
 .card {
   position: relative;
   width: 346px;
   height: 163px;
-  margin: 29px auto 20px auto;
+  margin: 0 auto 20px auto;
   background-color: #4378db;
   border-radius: 26px;
   box-shadow: 10px 15px 5px rgba(64, 71, 85, 0.2);
@@ -317,7 +364,7 @@ a {
   p:nth-child(3) {
     top: 30px;
     left: 165px;
-    font-size: 28px;
+    font-size: 20px;
   }
   p:nth-child(4) {
     left: 166px;
@@ -328,10 +375,9 @@ a {
   }
 }
 .dudeList {
-  border: 1px solid orange;
+  position: absolute;
   width: 100%;
-  height: 444px;
-  overflow: hidden;
+  min-height: 30px;
   border-radius: 16px 16px 0px 0px;
   background-color: #ffffff;
   .title {

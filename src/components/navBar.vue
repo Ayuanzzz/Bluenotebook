@@ -53,6 +53,9 @@ export default {
 .navBar {
   width: 100%;
   background-color: #f2f5f8;
+  position: fixed;
+  top: 0;
+  z-index:1000;
   img {
     position: absolute;
     border-radius: 50%;

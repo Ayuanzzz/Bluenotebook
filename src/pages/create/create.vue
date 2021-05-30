@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <navBar :name="navName"></navBar>
-    <div class="avatar">
+    <div class="avatar" :style="{marginTop:top}">
       <p>选择头像</p>
       <swiper
         class="swiper"
@@ -42,6 +42,7 @@ export default {
   },
   data() {
     return {
+      top:"",
       itemImg_path: "/static/images/bigicon/",
       avatar: [
         "iconfinder__deer_.png",
@@ -101,6 +102,7 @@ export default {
             orderTime: that.startTime,
             allSeconds: 0,
             love: 0,
+            lovePer:0,
             hate: 0,
           },
         })
@@ -127,6 +129,7 @@ export default {
     },
   },
   onLoad() {
+    this.top = this.globalData.cardTop
     this.openId = wx.getStorageSync("ui").openId;
     this.userName = wx.getStorageSync("ui").nickName;
   },
@@ -136,9 +139,9 @@ export default {
 <style lang='scss'>
 .container {
   width: 100%;
+  height: 100%;
 }
 p {
-  position: absolute;
   left: 42px;
   font-size: 17px;
   font-weight: bold;

@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <navBar :name="name"></navBar>
-    <div class="bar" >
-      <div class="wrap" :style={marginTop:wrapMarginTop}>
+    <div class="bar">
+      <div class="wrap" :style="{ marginTop: wrapMarginTop }">
         <!-- 时间开关 -->
         <div class="time">
           <p>{{ days }}</p>
@@ -44,7 +44,7 @@ export default {
   data() {
     return {
       name: "",
-      id: "79550af260aa2848196dd10a14fd0557",
+      id: "",
       barHeight: "",
       openId: "",
       dudeInfo: "",
@@ -52,12 +52,13 @@ export default {
       hate: "",
       switchChecked: true,
       days: "",
-      allSeconds: "",
-      happyPer:"",
-      sadPer:"",
+      allSeconds: 0,
+      lovePer:0,
+      happyPer: "",
+      sadPer: "",
       echarts,
-      option:{},
-      wrapMarginTop:""
+      option: {},
+      wrapMarginTop: "",
     };
   },
   methods: {
@@ -85,7 +86,6 @@ export default {
         })
         .then((res) => {
           that.dudeInfo = res.result.data[0];
-          console.log(that.dudeInfo);
           that.love = that.dudeInfo.love;
           that.hate = that.dudeInfo.hate;
           that.name = that.dudeInfo.dudeName;
@@ -107,7 +107,6 @@ export default {
       let old = this.dudeInfo.startTime;
       let onceDays = this.dudeInfo.allSeconds;
       this.allSeconds = now - old + onceDays;
-      console.log(this.allSeconds);
       this.days = Math.ceil(this.allSeconds / 86400000) + " 天";
     },
     //停止计时
@@ -200,7 +199,6 @@ export default {
         canvas.setChart(chart);
       chart.setOption(this.option);
       return chart;
-
     },
     //计算百分比
     calcPer() {
@@ -214,13 +212,12 @@ export default {
         this.sadPer = "0%";
         this.happyPer = "100%";
       } else {
-        this.happyPer =
-          Math.ceil((this.love / (this.love + this.hate)) * 100) + "%";
+        this.lovePer =
+          Math.ceil((this.love / (this.love + this.hate)) * 100);
+        this.happyPer = this.lovePer + "%"
         this.sadPer =
           100 - Math.ceil((this.love / (this.love + this.hate)) * 100) + "%";
       }
-      console.log(this.happyPer);
-      console.log(this.sadPer);
     },
     //加分
     happy() {
@@ -266,14 +263,39 @@ export default {
           console.log("减分失败", err);
         });
     },
+    //更新喜爱程度
+    loveLevel(){
+      const that = this;
+      wx.cloud
+        .callFunction({
+          name: "updatelevel",
+          data: {
+            openId: that.openId,
+            id: that.id,
+            lovePer: that.lovePer,
+          },
+        })
+        .then((res) => {
+          console.log("更新成功");
+        })
+        .catch((err) => {
+          console.log("更新失败", err);
+        });
+    },
   },
-  created() {
-    this.wrapMarginTop = this.globalData.navMargin
+  onLoad() {
+    this.wrapMarginTop = this.globalData.navMargin;
     this.openId = wx.getStorageSync("ui").openId;
   },
   onShow() {
+    this.id = this.globalData.id
     this.getDudeInfo();
   },
+  onHide(){
+    console.log(this.lovePer);
+    this.loveLevel();
+  }
+
 };
 </script>
 
@@ -287,7 +309,7 @@ export default {
 
 .bar {
   position: absolute;
-  top:0;
+  top: 0;
   width: 100%;
   height: 100%;
   display: flex;
@@ -309,7 +331,7 @@ export default {
   display: flex;
   justify-content: space-around;
   p {
-    font-family: PingFang HK;
+    font-family: PingFang SC;
     font-size: 22.92px;
     line-height: 32px;
     color: rgba(0, 0, 0, 0.4);
@@ -339,7 +361,7 @@ export default {
     height: 34px;
   }
   p {
-    font-family: PingFang HK;
+    font-family: PingFang SC;
     font-size: 24px;
     color: #f95050;
   }
