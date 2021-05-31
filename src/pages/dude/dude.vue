@@ -12,7 +12,7 @@
     </div>
     <div class="dudeList">
       <div class="title">
-        <p>按{{ arrangement }}排序</p>
+        <p :style="{color:txtColor}">按{{ arrangement }}排序</p>
         <span class="btnDown" id="icon" @click="clickBtnDown()"></span>
         <span class="btnAdd" id="icon" @click="toCreate()"></span>
         <p @click="toCreate()">添加</p>
@@ -59,7 +59,6 @@ export default {
       btnDown: true,
       btnLoading: false,
       screenHeight: "",
-      dudeHeight: "",
       navHeight: "",
       cardTop: "",
       dudeListMaxHeight: "",
@@ -74,6 +73,7 @@ export default {
         days: "",
       },
       showOption: false,
+      txtColor:"#405db5",
     };
   },
   methods: {
@@ -83,7 +83,8 @@ export default {
     },
     clickBtnDown() {
       this.btnDown = !this.btnDown;
-      this.arrangement = this.btnDown ? "创建日期" : "喜爱程度";
+      this.arrangement = this.btnDown ? "创建日期" : "开心程度";
+      this.txtColor = this.btnDown ? "#405db5":"#ab3f3f";
       if (!this.btnDown) {
         this.getDataByLove();
       } else {
@@ -114,13 +115,9 @@ export default {
         systemInfo.statusBarHeight;
       that.globalData.navHeight = that.navHeight + "px";
       that.globalData.navMargin = that.navHeight + 2 + "px";
-      that.barHeight = systemInfo.windowHeight - that.navHeight + "px";
-      that.globalData.barHeight = that.barHeight;
       //缩放比例
-      that.cardTop = that.navHeight + that.scale * 29 + "px";
-      that.globalData.cardTop = that.cardTop;
-      that.dudeHeight =
-        systemInfo.screenHeight - that.navHeight - that.scale * 222 + "px";
+      that.globalData.cardTop = that.navHeight + that.scale * 29 + "px";
+      that.cardTop = that.globalData.cardTop;
       that.globalData.imgHeight = menuButtonInfo.height + "px";
       that.globalData.imgTop = menuButtonInfo.top + "px";
       that.globalData.imgLeft =
@@ -319,7 +316,7 @@ export default {
 }
 #icon {
   display: inline-block;
-  background-image: url("https://6875-huhucloud-phuu5-1302876511.tcb.qcloud.la/icon.png?sign=553b6202a71c29ce97403283da9ef739&t=1618873925");
+  background-image: url("https://6875-huhucloud-phuu5-1302876511.tcb.qcloud.la/icon2.png?sign=95bb59286efd360ee6d958ef9ffd9169&t=1622504570");
   background-size: 97px 493px;
 }
 p {
@@ -396,10 +393,10 @@ a {
       font-size: 18px;
     }
     .btnDown {
-      height: 7px;
-      width: 11.5px;
+      height: 20px;
+      width: 20px;
       margin-right: 120px;
-      background: no-repeat -41px -175px;
+      background: no-repeat -36px -170px;
     }
     .btnAdd {
       width: 15px;

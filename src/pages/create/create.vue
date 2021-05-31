@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <navBar :name="navName"></navBar>
-    <div class="avatar" :style="{top:top}">
+    <div class="avatar" :style="{top:avatarTop}">
       <p>选择头像</p>
       <swiper
         class="swiper"
@@ -16,7 +16,7 @@
         </block>
       </swiper>
     </div>
-    <div class="nickName">
+    <div class="nickName" :style="{top:nickNameTop}">
       <p>昵称</p>
       <form @submit="fromSubmit" report-submit="true">
         <input
@@ -43,7 +43,8 @@ export default {
   data() {
     return {
       name:"",
-      top:"",
+      avatarTop:"",
+      nickNameTop:"",
       itemImg_path: "/static/images/bigicon/",
       avatar: [
         "iconfinder__deer_.png",
@@ -130,7 +131,9 @@ export default {
     },
   },
   onLoad() {
-    this.top = this.globalData.cardTop
+    let height = parseInt(this.globalData.navHeight)
+    this.avatarTop = this.globalData.navHeight;
+    this.nickNameTop = height + 300 + "px"
     this.openId = wx.getStorageSync("ui").openId;
     this.userName = wx.getStorageSync("ui").nickName;
     this.name = this.userName;
@@ -152,7 +155,7 @@ p {
   color: #4378db;
 }
 .avatar {
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 300px;
   p {
@@ -174,6 +177,7 @@ p {
 .nickName {
   position: absolute;
   width: 100%;
+  top:384px;
   p {
     top: 27px;
   }
