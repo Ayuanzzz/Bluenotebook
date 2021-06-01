@@ -11,24 +11,24 @@
     "navigationStyle": "custom"
   },
   "tabBar": {
-    "selectedColor":  "#4378DB",
+    "selectedColor":  "#405DB5",
     "list": [{
       "text": "首页",
       "pagePath": "pages/dude/main",
       "iconPath": "static/images/home.png",
-      "selectedIconPath": "static/images/home-active.png"
+      "selectedIconPath": "static/images/homeActive.png"
     },
     {
       "text": "统计",
       "pagePath": "pages/chart/main",
-      "iconPath": "static/images/statistics.png",
-      "selectedIconPath": "static/images/statistics-active.png"
+      "iconPath": "static/images/chart.png",
+      "selectedIconPath": "static/images/chartActive.png"
     },
     {
       "text": "作者",
       "pagePath": "pages/author/main",
       "iconPath": "static/images/author.png",
-      "selectedIconPath": "static/images/author-active.png"
+      "selectedIconPath": "static/images/authorActive.png"
     }]
   }
 }

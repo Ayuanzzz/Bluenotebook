@@ -7,8 +7,8 @@
       <div class="cardPerson" @click="toTopChart()">
         <img :src="itemImg_path2 + top.image" alt="" />
       </div>
-      <p @click="toTopChart()">{{ top.name }}</p>
       <p>{{ top.days }}</p>
+      <p @click="toTopChart()">{{ top.name }}</p>
     </div>
     <div class="dudeList">
       <div class="title">
@@ -363,16 +363,15 @@ a {
     color: #ffffff;
   }
   p:nth-child(3) {
-    top: 30px;
-    left: 165px;
-    font-size: 20px;
+    top: 35px;
+    left: 160px;
+    font-size: 22px;
+    letter-spacing: 0.3px;
   }
   p:nth-child(4) {
-    left: 166px;
-    top: 79px;
-    font-size: 22px;
-    font-weight: 300;
-    letter-spacing: 0.3px;
+    left: 160px;
+    top: 75px;
+    font-size: 27px;
   }
 }
 .dudeList {

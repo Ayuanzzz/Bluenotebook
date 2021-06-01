@@ -24,6 +24,6 @@ export default {
 <style>
 page {
   height: 100%;
-  background: #f0f0f0;
+  background-image: linear-gradient(#f0f0f0, #FFFFFF);
 }
 </style>
