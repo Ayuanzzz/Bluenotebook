@@ -1,26 +1,20 @@
 <template>
   <div>
-    <div class="mask">
-      <!-- <span v-for="(item, index) in textArr"
-          :key="index" :style={top:top}> {{ item }} </span> -->
-      <div class="text" :style="{ top: top }">
-        <span>1</span>
-        <span>2</span>
-        <span>3</span>
-        <span>4</span>
-        <span>6</span>
-        <span>7</span>
-      </div>
+    <div class="wrap">
+      <p :class="textStyle">{{ text }}</p>
     </div>
-    <button
-      class="btn"
-      open-type="getUserInfo"
-      lang="zh_CN"
-      @getuserinfo="onGotUserInfo"
-    >
-      体验一下
-    </button>
-    <button @click="test()">data</button>
+
+    <div class="btn">
+      <button
+        class="btn"
+        open-type="getUserInfo"
+        lang="zh_CN"
+        @getuserinfo="onGotUserInfo"
+        v-if="show"
+      >
+        玩一下
+      </button>
+    </div>
   </div>
 </template>
 
@@ -28,17 +22,16 @@
 export default {
   data() {
     return {
+      show: false,
       textArr: [
         "今天，和小伙伴过的怎样",
         "开心",
         "失落",
-        "想要记一笔？",
-        "这",
-        "就是你的",
+        "在这里记一笔吧",
         "小本子",
       ],
-      top: "30px",
-      index: 30,
+      text: "",
+      textStyle: "",
     };
   },
   methods: {
@@ -49,7 +42,7 @@ export default {
         wx.switchTab({
           url: "/pages/dude/main",
         });
-      } 
+      }
     },
     //登录
     onGotUserInfo: function (e) {
@@ -72,40 +65,24 @@ export default {
         },
       });
     },
-    //遍历text
-    showText() {
-      console.log("showText");
-      const that = this;
+    changeWords() {
       let i = 0;
       setInterval(() => {
-        if (i < that.textArr.length - 1) {
-          that.text1 = that.textArr[i];
-          that.text2 = that.textArr[i + 1];
-          console.log(that.text1);
-          console.log(that.text2);
-          console.log(i);
+        if (i < 5) {
+          this.text = this.textArr[i];
+          this.textStyle = "textStyle-" + i;
           i++;
-        }
-      }, 2000);
-    },
-    test() {
-      let timer = setInterval(() => {
-        this.index = this.index - 10;
-        this.top = this.index + "px";
-        console.log(this.top);
-        console.log(this.index + "----index");
-        if (this.index < -50) {
-          clearInterval(timer);
+        } else {
+          this.show = true;
         }
       }, 2000);
     },
   },
-  onLoad(){
-    this.oldUser()
+  onLoad() {
+    this.oldUser();
   },
   onShow() {
-    console.log("show");
-    this.test()
+    this.changeWords();
   },
 };
 </script>
@@ -114,39 +91,71 @@ export default {
 div {
   width: 100%;
   height: 100%;
-}
-button {
-  bottom: 20px;
-  height: 50px;
-  display: block;
-  margin-top: 200px;
-}
-.mask {
-  top: 100px;
-  left: 100px;
-  height: 30px;
+  margin: 0 auto;
   position: relative;
-  border: 1px solid red;
-  overflow: hidden;
-  .text {
-    position: absolute;
-    transition: top 0.5s ease-in-out;
-  }
-  span {
+}
+.btn {
+  position: absolute;
+  bottom: 50px;
+  width: 100%;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  button {
+  height: 45px;
+  width: 300px;
+  background-color: #4378db;
+  border-radius: 30px;
+  font-size: 18px;
+  font-family: PingFang SC;
+  line-height: 45px;
+  letter-spacing: 1px;
+  color: #ffffff;
+  text-align: center;
+}
+}
+
+.wrap {
+  position: absolute;
+  top: 40%;
+  width: 100%;
+  p {
     display: block;
+    font-family: PingFang SC;
+    font-weight: bold;
+    font-size: 30px;
+    text-align: center;
+    color: transparent;
   }
-  // span:nth-child(1) {
-  //   transition: top 0.5s ease-in-out;
-  // }
-  // span:nth-child(2) {
-  //   top: 60px;
-  // }
-  .data-show {
-    animation: move1 0.5s;
+  .textStyle-0 {
+    background: linear-gradient(45deg, #0ecffe 50%, #07a6f1);
+    background-clip: text;
+    -webkit-background-clip: text;
+    font-size: 25px;
   }
-  .data-up {
-    transform: translateY(-200%);
-    transition: transform 2s ease-in-out;
+  .textStyle-1 {
+    background: linear-gradient(45deg, #fa7671 50%, #f45f7f);
+    background-clip: text;
+    -webkit-background-clip: text;
+    font-size: 45px;
+  }
+  .textStyle-2 {
+    background: linear-gradient(45deg, #18e198 50%, #0ec15d);
+    background-clip: text;
+    -webkit-background-clip: text;
+    font-size: 35px;
+  }
+  .textStyle-3 {
+    background: linear-gradient(45deg, #8a7cfb 50%, #633e9c);
+    background-clip: text;
+    -webkit-background-clip: text;
+    font-size: 40px;
+  }
+  .textStyle-4 {
+    background: linear-gradient(45deg, #4e7fda 50%, #4378db);
+    background-clip: text;
+    -webkit-background-clip: text;
+    font-size: 35px;
   }
 }
 </style>
