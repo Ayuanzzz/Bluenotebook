@@ -37,7 +37,7 @@
   "miniprogramRoot": "dist/wx/",
   "compileType": "miniprogram",
   "appid": "wx8365c4d260adb889",
-  "projectname": "demo2",
+  "projectname": "BlueNotebook",
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
   "cloudfunctionRoot": "static/functions/",

@@ -20,7 +20,6 @@
       <ul class="dudeWrapper">
         <li
           id="dude"
-          :class="item.class"
           v-for="(item, index) in dudeInfo"
           :key="index"
         >
@@ -59,10 +58,7 @@ export default {
       btnDown: true,
       btnLoading: false,
       screenHeight: "",
-      navHeight: "",
       cardTop: "",
-      dudeListMaxHeight: "",
-      scale: "",
       dudeInfo: [],
       topInfo: [],
       itemImg_path1: "/static/images/smallicon/",
@@ -100,29 +96,7 @@ export default {
       var util = require("../../utils/index.js");
       this.startDays = util.formatTime(new Date());
     },
-    //获取导航栏参数
-    getNav() {
-      let that = this;
-      //获取按钮信息
-      const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
-      //获取用户手机信息
-      const systemInfo = wx.getSystemInfoSync();
-      that.globalData.screenHeight = systemInfo.screenHeight;
-      that.scale = systemInfo.screenWidth / 375;
-      that.navHeight =
-        (menuButtonInfo.top - systemInfo.statusBarHeight) * 2 +
-        menuButtonInfo.height +
-        systemInfo.statusBarHeight;
-      that.globalData.navHeight = that.navHeight + "px";
-      that.globalData.navMargin = that.navHeight + 2 + "px";
-      //缩放比例
-      that.globalData.cardTop = that.navHeight + that.scale * 29 + "px";
-      that.cardTop = that.globalData.cardTop;
-      that.globalData.imgHeight = menuButtonInfo.height + "px";
-      that.globalData.imgTop = menuButtonInfo.top + "px";
-      that.globalData.imgLeft =
-        systemInfo.screenWidth - menuButtonInfo.right + "px";
-    },
+    
     //按创建时间获取小伙伴数据
     getData() {
       const that = this;
@@ -299,7 +273,7 @@ export default {
     },
   },
   onLoad() {
-    this.getNav();
+    this.cardTop = this.globalData.cardTop
   },
   onShow() {
     this.getData();
@@ -473,7 +447,7 @@ a {
         }
       }
     }
-    .dudeStyle-1 {
+    li:nth-child(4n+1) {
       background-color: rgba(67, 120, 219, 0.16);
       .btnOption {
         background: no-repeat -34px -216.96px;
@@ -485,7 +459,7 @@ a {
         color: #4378db;
       }
     }
-    .dudeStyle-2 {
+    li:nth-child(4n+2) {
       background-color: rgba(240, 167, 20, 0.16);
       .btnOption {
         background: no-repeat -34px -276.96px;
@@ -497,7 +471,7 @@ a {
         color: rgba(240, 167, 20, 1);
       }
     }
-    .dudeStyle-3 {
+    li:nth-child(4n+3) {
       background-color: rgba(243, 85, 85, 0.16);
       .btnOption {
         background: no-repeat -34px -336.96px;
@@ -509,7 +483,7 @@ a {
         color: rgba(243, 85, 85, 1);
       }
     }
-    .dudeStyle-0 {
+    li:nth-child(4n+4) {
       background-color: rgba(40, 161, 100, 0.16);
       .btnOption {
         background: no-repeat -34px -396.96px;

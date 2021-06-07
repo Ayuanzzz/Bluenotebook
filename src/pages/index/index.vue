@@ -44,6 +44,28 @@ export default {
         });
       }
     },
+    //获取导航栏参数
+    getNav() {
+      let that = this;
+      //获取按钮信息
+      const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
+      //获取用户手机信息
+      const systemInfo = wx.getSystemInfoSync();
+      that.globalData.screenHeight = systemInfo.screenHeight;
+      let scale = systemInfo.screenWidth / 375;
+      let navHeight =
+        (menuButtonInfo.top - systemInfo.statusBarHeight) * 2 +
+        menuButtonInfo.height +
+        systemInfo.statusBarHeight;
+      that.globalData.navHeight = navHeight + "px";
+      that.globalData.navMargin = navHeight + 2 + "px";
+      //缩放比例
+      that.globalData.cardTop = navHeight + scale * 29 + "px";
+      that.globalData.imgHeight = menuButtonInfo.height + "px";
+      that.globalData.imgTop = menuButtonInfo.top + "px";
+      that.globalData.imgLeft =
+        systemInfo.screenWidth - menuButtonInfo.right + "px";
+    },
     //登录
     onGotUserInfo: function (e) {
       const that = this;
@@ -80,6 +102,7 @@ export default {
   },
   onLoad() {
     this.oldUser();
+    this.getNav();
   },
   onShow() {
     this.changeWords();
@@ -102,17 +125,17 @@ div {
   display: flex;
   justify-content: center;
   button {
-  height: 45px;
-  width: 300px;
-  background-color: #4378db;
-  border-radius: 30px;
-  font-size: 18px;
-  font-family: PingFang SC;
-  line-height: 45px;
-  letter-spacing: 1px;
-  color: #ffffff;
-  text-align: center;
-}
+    height: 45px;
+    width: 300px;
+    background-color: #4378db;
+    border-radius: 30px;
+    font-size: 18px;
+    font-family: PingFang SC;
+    line-height: 45px;
+    letter-spacing: 1px;
+    color: #ffffff;
+    text-align: center;
+  }
 }
 
 .wrap {
