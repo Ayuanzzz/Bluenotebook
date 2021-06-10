@@ -32,19 +32,9 @@ export default {
       textTop: this.globalData.textTop,
     };
   },
-  methods: {
-    //获取缓存用户信息
-    getUserInfo() {
-      const ui = wx.getStorageSync("ui");
-      if (ui.openId) {
-        this.Avatar = ui.avatarUrl;
-      } else {
-        this.Avatar = "/static/images/user.png";
-      }
-    },
-  },
   onLoad() {
-    this.getUserInfo();
+    const ui = wx.getStorageSync("ui");
+    this.Avatar = ui.avatarUrl;
   },
 };
 </script>
@@ -55,7 +45,7 @@ export default {
   background-color: #f2f5f8;
   position: fixed;
   top: 0;
-  z-index:1000;
+  z-index: 1000;
   img {
     position: absolute;
     border-radius: 50%;
@@ -65,7 +55,11 @@ export default {
     width: 100%;
     text-align: center;
     p {
+      position: relative;
       font-family: PingFang SC;
+      font-size: 16px;
+      color: #000000;
+      font-weight: normal;
     }
   }
   hr {

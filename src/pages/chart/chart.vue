@@ -53,7 +53,7 @@ export default {
       switchChecked: true,
       days: "",
       allSeconds: 0,
-      lovePer:0,
+      lovePer: 0,
       happyPer: "",
       sadPer: "",
       echarts,
@@ -86,6 +86,7 @@ export default {
         })
         .then((res) => {
           that.dudeInfo = res.result.data[0];
+          console.log(that.dudeInfo);
           that.love = that.dudeInfo.love;
           that.hate = that.dudeInfo.hate;
           that.name = that.dudeInfo.dudeName;
@@ -212,9 +213,8 @@ export default {
         this.sadPer = "0%";
         this.happyPer = "100%";
       } else {
-        this.lovePer =
-          Math.ceil((this.love / (this.love + this.hate)) * 100);
-        this.happyPer = this.lovePer + "%"
+        this.lovePer = Math.ceil((this.love / (this.love + this.hate)) * 100);
+        this.happyPer = this.lovePer + "%";
         this.sadPer =
           100 - Math.ceil((this.love / (this.love + this.hate)) * 100) + "%";
       }
@@ -264,15 +264,24 @@ export default {
         });
     },
     //更新喜爱程度
-    loveLevel(){
+    loveLevel() {
       const that = this;
+      let lovePer;
+      if ((that.love == 0) & (that.hate > 0)) {
+        lovePer = -this.hate;
+      } else if ((that.hate == 0) & (that.love > 0)) {
+        lovePer = this.love;
+      } else {
+        lovePer = that.lovePer;
+      }
+      console.log(lovePer);
       wx.cloud
         .callFunction({
           name: "updatelevel",
           data: {
             openId: that.openId,
             id: that.id,
-            lovePer: that.lovePer,
+            lovePer: lovePer,
           },
         })
         .then((res) => {
@@ -288,14 +297,12 @@ export default {
     this.openId = wx.getStorageSync("ui").openId;
   },
   onShow() {
-    this.id = this.globalData.id
+    this.id = this.globalData.id;
     this.getDudeInfo();
   },
-  onHide(){
-    console.log(this.lovePer);
+  onHide() {
     this.loveLevel();
-  }
-
+  },
 };
 </script>
 

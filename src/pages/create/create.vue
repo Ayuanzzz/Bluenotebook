@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <navBar :name="navName"></navBar>
+    <loader v-if="show"></loader>
     <div class="avatar" :style="{top:avatarTop}">
       <p>选择头像</p>
       <swiper
@@ -36,13 +37,15 @@
 
 <script>
 import navBar from "@/components/navBar";
+import loader from "@/components/loading"
 export default {
   components: {
     navBar,
   },
   data() {
     return {
-      name:"",
+      navName:"创建小伙伴",
+      show:false,
       avatarTop:"",
       nickNameTop:"",
       itemImg_path: "/static/images/bigicon/",
@@ -86,6 +89,7 @@ export default {
     //创建小伙伴
     adddude() {
       const that = this;
+      that.show = true;
       let time = new Date();
       that.startTime = time.getTime();
       that.timeformat();
@@ -109,8 +113,9 @@ export default {
           },
         })
         .then((res) => {
+          that.show = false;
+          that.navToHome();
           console.log("写入数据库成功");
-          this.navToHome();
         })
         .catch((err) => {
           console.log("写入数据库失败", err);
@@ -136,7 +141,6 @@ export default {
     this.nickNameTop = height + 300 + "px"
     this.openId = wx.getStorageSync("ui").openId;
     this.userName = wx.getStorageSync("ui").nickName;
-    this.name = this.userName;
   },
 };
 </script>
@@ -147,7 +151,7 @@ export default {
   width: 100%;
   height: 100%;
 }
-p {
+@mixin textStyle {
   position: absolute;
   left: 42px;
   font-size: 17px;
@@ -159,6 +163,7 @@ p {
   width: 100%;
   height: 300px;
   p {
+    @include textStyle;
     top: 27px;
   }
   swiper {
@@ -179,6 +184,7 @@ p {
   width: 100%;
   top:384px;
   p {
+    @include textStyle;
     top: 27px;
   }
   form {

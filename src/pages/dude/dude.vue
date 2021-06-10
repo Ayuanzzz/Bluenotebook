@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <loading v-if="btnLoading"></loading>
     <navBar :name="navName"></navBar>
     <div class="card" :style="{ marginTop: cardTop }">
       <span class="btnRight" id="icon" @click="toTopChart()"></span>
@@ -12,17 +11,13 @@
     </div>
     <div class="dudeList">
       <div class="title">
-        <p :style="{color:txtColor}">按{{ arrangement }}排序</p>
+        <p :style="{ color: txtColor }">按{{ arrangement }}排序</p>
         <span class="btnDown" id="icon" @click="clickBtnDown()"></span>
         <span class="btnAdd" id="icon" @click="toCreate()"></span>
         <p @click="toCreate()">添加</p>
       </div>
       <ul class="dudeWrapper">
-        <li
-          id="dude"
-          v-for="(item, index) in dudeInfo"
-          :key="index"
-        >
+        <li id="dude" v-for="(item, index) in dudeInfo" :key="index">
           <div class="profile" @click="toChart(index)">
             <img :src="itemImg_path1 + item.dudeImg" />
           </div>
@@ -56,8 +51,6 @@ export default {
       navName: "小本子",
       arrangement: "创建日期",
       btnDown: true,
-      btnLoading: false,
-      screenHeight: "",
       cardTop: "",
       dudeInfo: [],
       topInfo: [],
@@ -69,7 +62,7 @@ export default {
         days: "",
       },
       showOption: false,
-      txtColor:"#405db5",
+      txtColor: "#405db5",
     };
   },
   methods: {
@@ -80,15 +73,12 @@ export default {
     clickBtnDown() {
       this.btnDown = !this.btnDown;
       this.arrangement = this.btnDown ? "创建日期" : "开心程度";
-      this.txtColor = this.btnDown ? "#405db5":"#ab3f3f";
+      this.txtColor = this.btnDown ? "#405db5" : "#ab3f3f";
       if (!this.btnDown) {
         this.getDataByLove();
       } else {
         this.getData();
       }
-    },
-    loader() {
-      this.btnLoading = true;
     },
     //时间格式化
     timeformat() {
@@ -96,7 +86,7 @@ export default {
       var util = require("../../utils/index.js");
       this.startDays = util.formatTime(new Date());
     },
-    
+
     //按创建时间获取小伙伴数据
     getData() {
       const that = this;
@@ -138,7 +128,6 @@ export default {
     //处理小伙伴信息
     mergeInfo() {
       for (let i = 0; i < this.dudeInfo.length; i++) {
-        this.dudeInfo[i].class = "dudeStyle-" + ((i + 1) % 4);
         // 设置每个按钮的状态
         this.dudeInfo[i].showOption = false;
       }
@@ -168,6 +157,7 @@ export default {
     mergeImg() {
       this.top.image = this.topInfo[0].dudeImg;
       this.top.name = this.topInfo[0].dudeName;
+      this.globalData.id = this.topInfo[0]._id;
       let time = new Date();
       let now = time.getTime();
       let old = this.topInfo[0].startTime;
@@ -197,6 +187,11 @@ export default {
           },
         })
         .then((res) => {
+          wx.showToast({
+            title: "置顶成功",
+            icon: "success",
+            duration: 2000,
+          });
           console.log("置顶成功");
         })
         .catch((err) => {
@@ -212,6 +207,7 @@ export default {
         let index = 0;
         that.toTop(index);
       } else {
+        var dudeId = that.dudeInfo[index]._id;
         that.dudeInfo.splice(index, 1);
       }
       wx.cloud
@@ -219,10 +215,15 @@ export default {
           name: "removedude",
           data: {
             openId: that.ui.openId,
-            id: that.dudeInfo[index]._id,
+            id: dudeId,
           },
         })
         .then((res) => {
+          wx.showToast({
+            title: "删除成功",
+            icon: "success",
+            duration: 2000,
+          });
           console.log("删除成功");
         })
         .catch((err) => {
@@ -267,16 +268,17 @@ export default {
       this.navTo();
     },
   },
-  computed: {
-    watchName() {
-      console.log(this.top.name);
-    },
-  },
   onLoad() {
-    this.cardTop = this.globalData.cardTop
+    this.cardTop = this.globalData.cardTop;
   },
   onShow() {
-    this.getData();
+    if (this.arrangement == "创建日期") {
+      console.log(1);
+      this.getData();
+    } else {
+      console.log(2);
+      this.getDataByLove();
+    }
     this.getTopData();
   },
 };
@@ -407,8 +409,10 @@ a {
       }
       .btnOption {
         position: absolute;
+        padding-bottom: 60rpx;
+        padding-left: 70rpx;
         top: 24px;
-        left: 125px;
+        left: 100px;
         width: 24px;
         height: 24px;
       }
@@ -447,10 +451,10 @@ a {
         }
       }
     }
-    li:nth-child(4n+1) {
+    li:nth-child(4n + 1) {
       background-color: rgba(67, 120, 219, 0.16);
       .btnOption {
-        background: no-repeat -34px -216.96px;
+        background: no-repeat -15px -216.96px;
       }
       .name {
         color: #405db5;
@@ -459,10 +463,10 @@ a {
         color: #4378db;
       }
     }
-    li:nth-child(4n+2) {
+    li:nth-child(4n + 2) {
       background-color: rgba(240, 167, 20, 0.16);
       .btnOption {
-        background: no-repeat -34px -276.96px;
+        background: no-repeat -15px -276.96px;
       }
       .name {
         color: rgba(240, 167, 20, 1);
@@ -471,10 +475,10 @@ a {
         color: rgba(240, 167, 20, 1);
       }
     }
-    li:nth-child(4n+3) {
+    li:nth-child(4n + 3) {
       background-color: rgba(243, 85, 85, 0.16);
       .btnOption {
-        background: no-repeat -34px -336.96px;
+        background: no-repeat -15px -336.96px;
       }
       .name {
         color: rgba(171, 63, 63, 1);
@@ -483,10 +487,10 @@ a {
         color: rgba(243, 85, 85, 1);
       }
     }
-    li:nth-child(4n+4) {
+    li:nth-child(4n + 4) {
       background-color: rgba(40, 161, 100, 0.16);
       .btnOption {
-        background: no-repeat -34px -396.96px;
+        background: no-repeat -15px -396.96px;
       }
       .name {
         color: rgba(34, 137, 85, 1);
