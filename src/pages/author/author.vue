@@ -1,61 +1,79 @@
 <template>
-  <div class="spinner-box">
-    <div class="pulse-container">
-      <div class="pulse-bubble pulse-bubble-1"></div>
-      <div class="pulse-bubble pulse-bubble-2"></div>
-      <div class="pulse-bubble pulse-bubble-3"></div>
-    </div>
+<div>
+<div class="container" v-if="containerShow">
+    <span>嗨,</span>
+    <span>我是</span>
+    <span @click="show()">阿圆</span>
   </div>
+  <div class="mask" v-if="maskShow">
+    <img src="/static/images/github.png" alt="" />
+    <p>github.com/Ayuanzzz/Bluenotebook</p>
+  </div>
+</div>
+  
+  
 </template>
 
 <script>
-export default {};
+export default {
+  data(){
+    return{
+      containerShow:true,
+      maskShow:false,
+    }
+  },
+  methods:{
+    show(){
+      this.containerShow = false;
+      this.maskShow = true
+    }
+  },
+  onHide(){
+    this.maskShow = false;
+    this.containerShow = true;
+  }
+};
 </script>
 
 <style lang='scss'>
-.spinner-box {
-  position: fixed;
-  top: 0;
+span {
+  font-family: PingFang SC;
+  font-weight: bold;
+}
+.container {
+  position: relative;
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(8px);
-  // z-index: 1000;
-}
-@keyframes pulse {
-  from {
-    opacity: 1;
-    transform: scale(1);
+  text-align: center;
+  span:nth-child(1) {
+    font-size: 60px;
+    padding-top: 55%;
+    display: block;
   }
-  to {
-    opacity: 0.25;
-    transform: scale(0.75);
+  span:nth-child(2) {
+    font-size: 50px;
   }
-}
-.pulse-container {
-  width: 120px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  // z-index: 2000;
+  span:nth-child(3) {
+    font-size: 50px;
+    border-bottom: 2px solid #0088ff;
+    color: #0088ff;
+  }
 }
 
-.pulse-bubble {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: #4378db;
-  .pulse-bubble-1 {
-    animation: pulse 0.4s ease 0s infinite alternate;
+.mask {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  img{
+    width: 90px;
+    height: 90px;
+    padding-top: 55%;
+    padding-bottom: 25px;
   }
-  .pulse-bubble-2 {
-    animation: pulse 0.4s ease 0.2s infinite alternate;
-  }
-  .pulse-bubble-3 {
-    animation: pulse 0.4s ease 0.4s infinite alternate;
+  p{
+    font-size: 20px;
+    font-family: Helvetica;
   }
 }
 </style>
