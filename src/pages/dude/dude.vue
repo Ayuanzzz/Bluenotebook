@@ -273,10 +273,8 @@ export default {
   },
   onShow() {
     if (this.arrangement == "创建日期") {
-      console.log(1);
       this.getData();
     } else {
-      console.log(2);
       this.getDataByLove();
     }
     this.getTopData();

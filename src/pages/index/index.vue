@@ -5,15 +5,7 @@
     </div>
 
     <div class="btn">
-      <button
-        class="btn"
-        open-type="getUserInfo"
-        lang="zh_CN"
-        @getuserinfo="onGotUserInfo"
-        v-if="show"
-      >
-        玩一下
-      </button>
+      <button class="btn" @click="getUserProfile" v-if="show">玩一下</button>
     </div>
   </div>
 </template>
@@ -67,23 +59,24 @@ export default {
         systemInfo.screenWidth - menuButtonInfo.right + "px";
     },
     //登录
-    onGotUserInfo: function (e) {
+    getUserProfile(e) {
       const that = this;
-      wx.cloud.callFunction({
-        name: "login",
+      let time = new Date();
+      let now = time.getTime();
+      wx.getUserProfile({
+        desc: "创建用户主页",
         success: (res) => {
-          that.openId = res.result.openid;
-          that.userInfo = e.target.userInfo;
+          that.openId = res.userInfo.nickName + res.userInfo.city;
+          that.userInfo = res.userInfo;
           that.userInfo.openId = that.openId;
           wx.setStorageSync("ui", that.userInfo);
           wx.navigateTo({
             url: "/pages/create/main",
           });
-          console.log("云函数调用成功");
-          console.log(that.userInfo);
+          console.log("登录成功");
         },
         fail: (err) => {
-          console.error("[云函数] [login] 调用失败", err);
+          console.error("登录失败", err);
         },
       });
     },

@@ -268,9 +268,9 @@ export default {
       const that = this;
       let lovePer;
       if ((that.love == 0) & (that.hate > 0)) {
-        lovePer = -this.hate;
+        lovePer = -100;
       } else if ((that.hate == 0) & (that.love > 0)) {
-        lovePer = this.love;
+        lovePer = 100;
       } else {
         lovePer = that.lovePer;
       }
